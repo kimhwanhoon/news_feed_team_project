@@ -1,9 +1,9 @@
 import { createStore } from 'redux';
 import { combineReducers } from 'redux';
-import sampleReducer from 'redux/modules/sampleReducer';
+import reduxUser from 'redux/modules/user';
 const rootReducer = combineReducers({
   // reducer 들을 여기에 적는다.
-  sampleReducer
+  reduxUser
 });
 const store = createStore(rootReducer);
 

@@ -1,11 +1,13 @@
-import { signupEmailPassword } from 'firebaseConfig/firebaseAuth';
+import { loginWithGithub, loginWithGoogle, signupEmailPassword } from 'firebaseConfig/firebaseAuth';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 const inputOnChangeHandler = (e, setFn) => {
   setFn(e.target.value);
 };
 
 function SignUpModal() {
+  const dispatch = useDispatch();
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   return (
@@ -44,17 +46,17 @@ function SignUpModal() {
         </div>
         <div className="modal-divider">
           <div></div>
-          <span>or</span>
+          <span>or sign in with</span>
           <div></div>
         </div>
         <div className="modal-social-icon-container">
-          <button>
+          <button onClick={() => loginWithGoogle(dispatch)}>
             <img src="img/Google.png" alt="Google icon" />
             Google
           </button>
-          <button>
-            <img src="img/Facebook.png" alt="facebook icon" />
-            Facebook
+          <button onClick={() => loginWithGithub(dispatch)}>
+            <img src="img/github.png" alt="github icon" />
+            Github
           </button>
         </div>
         <div className="modal-last-suggestion-container">

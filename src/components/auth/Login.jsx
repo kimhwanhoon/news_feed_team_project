@@ -1,5 +1,6 @@
-import { loginEmailPassword, loginWithFacebook, loginWithGoogle } from 'firebaseConfig/firebaseAuth';
+import { loginEmailPassword, loginWithGithub, loginWithGoogle } from 'firebaseConfig/firebaseAuth';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export const openLoginModal = () => {
   const modalContainer = document.getElementById('login-modal');
@@ -13,6 +14,7 @@ const inputOnChangeHandler = (e, setFn) => {
 //
 
 function LoginModal() {
+  const dispatch = useDispatch();
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   return (
@@ -43,22 +45,22 @@ function LoginModal() {
             type="button"
             className="input modal-button"
             value="Login"
-            onClick={() => loginEmailPassword(emailValue, passwordValue)}
+            onClick={() => loginEmailPassword(emailValue, passwordValue, dispatch)}
           />
         </div>
         <div className="modal-divider">
           <div></div>
-          <span>or</span>
+          <span>or sign in with</span>
           <div></div>
         </div>
         <div className="modal-social-icon-container">
-          <button onClick={() => loginWithGoogle()}>
+          <button onClick={() => loginWithGoogle(dispatch)}>
             <img src="img/Google.png" alt="Google icon" />
             Google
           </button>
-          <button onClick={() => loginWithFacebook()}>
-            <img src="img/Facebook.png" alt="facebook icon" />
-            Facebook
+          <button onClick={() => loginWithGithub(dispatch)}>
+            <img src="img/github.png" alt="github icon" />
+            Github
           </button>
         </div>
         <div className="modal-last-suggestion-container">
@@ -77,8 +79,23 @@ function LoginModal() {
 export default LoginModal;
 
 const signUpOnClickHandler = () => {
-  document.getElementById('login-modal').classList.toggle('show');
-  document.getElementById('login-modal').classList.toggle('hidden');
-  document.getElementById('signup-modal').classList.toggle('show');
-  document.getElementById('signup-modal').classList.toggle('hidden');
+  const loginModal = document.getElementById('login-modal');
+  const signUpModal = document.getElementById('signup-modal');
+  loginModal.classList.toggle('show');
+  loginModal.classList.toggle('hidden');
+  signUpModal.classList.toggle('show');
+  signUpModal.classList.toggle('hidden');
+};
+
+export const onSuccessfulHandler = () => {
+  const loginModal = document.getElementById('login-modal');
+  const signUpModal = document.getElementById('signup-modal');
+
+  if (loginModal.classList.contains('show')) {
+    loginModal.classList.toggle('hidden');
+    loginModal.classList.toggle('show');
+  } else if (signUpModal.classList.contains('show')) {
+    signUpModal.classList.toggle('hidden');
+    signUpModal.classList.toggle('show');
+  }
 };

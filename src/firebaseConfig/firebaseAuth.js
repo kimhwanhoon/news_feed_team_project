@@ -1,3 +1,4 @@
+import { onSuccessfulHandler } from 'components/auth/Login';
 import { initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
@@ -6,7 +7,9 @@ import {
   getAuth,
   signInWithEmailAndPassword,
   signInWithPopup,
-  FacebookAuthProvider
+  onAuthStateChanged,
+  signOut,
+  GithubAuthProvider
 } from 'firebase/auth';
 
 const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG);
@@ -16,14 +19,14 @@ export const firebaseApp = initializeApp(firebaseConfig);
 
 const auth = getAuth(firebaseApp);
 
-export const loginEmailPassword = async (emailValue, passwordValue) => {
+export const loginEmailPassword = async (emailValue, passwordValue, dispatch) => {
   const loginEmail = emailValue;
   const loginPassword = passwordValue;
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
-    alert(`Welcome, ${userCredential.user.email}`);
-    // console.log(userCredential);
+    onSuccessfulHandler();
+    dispatch({ type: 'login with email and password.', payload: userCredential.user.email });
   } catch (error) {
     if (error.code === 'auth/invalid-email') {
       alert('invalid email. Please check your email.');
@@ -44,6 +47,7 @@ export const signupEmailPassword = async (emailValue, passwordValue) => {
   const loginPassword = passwordValue;
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, loginEmail, loginPassword);
+    onSuccessfulHandler();
     alert(`Successfully registered! \nEmail: ${userCredential.user.email}`);
   } catch (error) {
     if (error.code === 'auth/invalid-email') {
@@ -62,7 +66,7 @@ export const signupEmailPassword = async (emailValue, passwordValue) => {
 
 // GOOGLE
 
-export const loginWithGoogle = async () => {
+export const loginWithGoogle = async (dispatch) => {
   const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider)
     .then((result) => {
@@ -75,46 +79,53 @@ export const loginWithGoogle = async () => {
       // ...
       const detail = getAdditionalUserInfo(result);
       console.log(token, user, detail);
-      alert(`Welcome, ${user.displayName}!`);
+      onSuccessfulHandler();
+      dispatch({ type: 'google', payload: detail });
     })
     .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.customData.email;
-      // The AuthCredential type that was used.
-      const credential = GoogleAuthProvider.credentialFromError(error);
-      // ...
-      console.log(errorCode, errorMessage, email, credential);
+      console.log(error);
     });
 };
 
-// Facebook
-export const loginWithFacebook = () => {
-  const provider = new FacebookAuthProvider();
+// Github
+export const loginWithGithub = (dispatch) => {
+  const provider = new GithubAuthProvider();
   signInWithPopup(auth, provider)
     .then((result) => {
+      // This gives you a GitHub Access Token. You can use it to access the GitHub API.
+      const credential = GithubAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
       // The signed-in user info.
       const user = result.user;
-      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-      const credential = FacebookAuthProvider.credentialFromResult(result);
-      const accessToken = credential.accessToken;
-      // IdP data available using getAdditionalUserInfo(result)
-      // ...
       const detail = getAdditionalUserInfo(result);
-      console.log(accessToken, user, detail);
-      alert(`Welcome, ${user.displayName}!`);
+      console.log(token, user, detail);
+      onSuccessfulHandler();
+      dispatch({ type: 'github', payload: detail });
     })
     .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.customData.email;
-      // The AuthCredential type that was used.
-      const credential = FacebookAuthProvider.credentialFromError(error);
-      console.log(errorCode, errorMessage, email, credential);
-      // ...
+      console.log(error);
     });
 };
+
+// Home에서 사용자가 로그인 했는지 확인하기
+export const loggedInUserCheck = () => {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        resolve(user);
+      } else {
+        // user is signed out.
+        resolve(null);
+      }
+    });
+  });
+};
+
+// 로그아웃 처리 하기
+export const logout = async (dispatch) => {
+  await signOut(auth);
+  dispatch({ type: 'logout' });
+  alert('User logged out!');
+};
+
+// PHONE
