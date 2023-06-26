@@ -20,11 +20,8 @@ export const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 
 export const loginEmailPassword = async (emailValue, passwordValue, dispatch) => {
-  const loginEmail = emailValue;
-  const loginPassword = passwordValue;
-
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+    const userCredential = await signInWithEmailAndPassword(auth, emailValue, passwordValue);
     onSuccessfulHandler();
     dispatch({ type: 'login with email and password.', payload: userCredential.user.email });
   } catch (error) {
@@ -37,16 +34,14 @@ export const loginEmailPassword = async (emailValue, passwordValue, dispatch) =>
     } else if (error.code === 'auth/email-already-in-use') {
       alert('The email is already registered!');
     } else if (error.code === 'auth/user-not-found') {
-      alert(`We cannot find user email with ${loginEmail}`);
+      alert(`We cannot find user email with ${emailValue}`);
     }
   }
 };
 
 export const signupEmailPassword = async (emailValue, passwordValue) => {
-  const loginEmail = emailValue;
-  const loginPassword = passwordValue;
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, loginEmail, loginPassword);
+    const userCredential = await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
     onSuccessfulHandler();
     alert(`Successfully registered! \nEmail: ${userCredential.user.email}`);
   } catch (error) {
@@ -59,7 +54,7 @@ export const signupEmailPassword = async (emailValue, passwordValue) => {
     } else if (error.code === 'auth/email-already-in-use') {
       alert('The email is already registered!');
     } else if (error.code === 'auth/user-not-found') {
-      alert(`We cannot find user email with ${loginEmail}`);
+      alert(`We cannot find user email with ${emailValue}`);
     }
   }
 };
@@ -127,5 +122,3 @@ export const logout = async (dispatch) => {
   dispatch({ type: 'logout' });
   alert('User logged out!');
 };
-
-// PHONE
