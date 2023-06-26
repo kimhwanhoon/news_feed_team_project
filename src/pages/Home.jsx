@@ -1,7 +1,7 @@
 import React from 'react';
-import Input from 'redux/components/Input';
-import Searchbar from 'redux/components/Searchbar';
-import FeedList from '../redux/components/FeedList';
+import Input from 'components/Input';
+import Searchbar from 'components/Searchbar';
+import FeedList from '../components/FeedList';
 
 function Home() {
   return (

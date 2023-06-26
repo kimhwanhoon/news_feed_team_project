@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import uuid from 'react-uuid';
-import { addFeed } from '../modules/feeds';
+import { addFeed } from '../redux/modules/feeds';
 
 function Input() {
   const [title, setTitle] = useState('');
