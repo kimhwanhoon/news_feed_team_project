@@ -11,6 +11,7 @@ import {
   signOut,
   GithubAuthProvider
 } from 'firebase/auth';
+import { actionTypes } from 'redux/modules/user';
 
 const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG);
 
@@ -19,11 +20,13 @@ export const firebaseApp = initializeApp(firebaseConfig);
 
 const auth = getAuth(firebaseApp);
 
-export const loginEmailPassword = async (emailValue, passwordValue, dispatch) => {
+export const loginEmailPassword = async (emailValue, passwordValue, dispatch, setEmailValue, setPasswordValue) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, emailValue, passwordValue);
     onSuccessfulHandler();
-    dispatch({ type: 'login with email and password.', payload: userCredential.user.email });
+    setEmailValue('');
+    setPasswordValue('');
+    dispatch({ type: actionTypes.LOGIN_WITH_EMAIL, payload: userCredential.user.email });
   } catch (error) {
     if (error.code === 'auth/invalid-email') {
       alert('invalid email. Please check your email.');
@@ -75,7 +78,7 @@ export const loginWithGoogle = async (dispatch) => {
       const detail = getAdditionalUserInfo(result);
       console.log(token, user, detail);
       onSuccessfulHandler();
-      dispatch({ type: 'google', payload: detail });
+      dispatch({ type: actionTypes.SOCIAL, payload: detail });
     })
     .catch((error) => {
       console.log(error);
@@ -95,7 +98,7 @@ export const loginWithGithub = (dispatch) => {
       const detail = getAdditionalUserInfo(result);
       console.log(token, user, detail);
       onSuccessfulHandler();
-      dispatch({ type: 'github', payload: detail });
+      dispatch({ type: actionTypes.SOCIAL, payload: detail });
     })
     .catch((error) => {
       console.log(error);
@@ -119,6 +122,6 @@ export const loggedInUserCheck = () => {
 // 로그아웃 처리 하기
 export const logout = async (dispatch) => {
   await signOut(auth);
-  dispatch({ type: 'logout' });
+  dispatch({ type: actionTypes.LOGOUT });
   alert('User logged out!');
 };

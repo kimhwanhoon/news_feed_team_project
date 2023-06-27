@@ -1,15 +1,40 @@
 import { loginWithGithub, loginWithGoogle, signupEmailPassword } from 'firebaseConfig/firebaseAuth';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-
+import { actionTypes } from 'redux/modules/user';
 const inputOnChangeHandler = (e, setFn) => {
   setFn(e.target.value);
+};
+
+const signUpClickHandler = (
+  emailValue,
+  passwordValue,
+  confirmPasswordValue,
+  dispatch,
+  setEmailValue,
+  setPasswordValue,
+  setConfirmPasswordValue
+) => {
+  if (passwordValue.length >= 8) {
+    if (passwordValue === confirmPasswordValue) {
+      signupEmailPassword(emailValue, passwordValue);
+      setEmailValue('');
+      setPasswordValue('');
+      setConfirmPasswordValue('');
+      dispatch({ type: actionTypes.SIGNUP, payload: emailValue });
+    } else {
+      alert('Please confirm your password again.');
+    }
+  } else {
+    alert('Password should be at least 8 characters.');
+  }
 };
 
 function SignUpModal() {
   const dispatch = useDispatch();
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
   return (
     <section id="signup-modal" className="modal-container hidden">
       <div className="modal">
@@ -25,6 +50,7 @@ function SignUpModal() {
             onChange={(e) => inputOnChangeHandler(e, setEmailValue)}
             placeholder="you@example.com"
           />
+
           <input
             className="input text"
             type="password"
@@ -33,14 +59,28 @@ function SignUpModal() {
             placeholder="At least 8 characters"
           />
           <input
+            className="input text"
+            type="password"
+            value={confirmPasswordValue}
+            onChange={(e) => inputOnChangeHandler(e, setConfirmPasswordValue)}
+            placeholder="Confirm password"
+          />
+
+          <input
             id="modal-signup-button"
             type="button"
             className="input modal-button"
             value="Sign Up"
             onClick={() =>
-              passwordValue.length >= 8
-                ? signupEmailPassword(emailValue, passwordValue)
-                : alert('Password should be at least 8 characters.')
+              signUpClickHandler(
+                emailValue,
+                passwordValue,
+                confirmPasswordValue,
+                dispatch,
+                setEmailValue,
+                setPasswordValue,
+                setConfirmPasswordValue
+              )
             }
           />
         </div>

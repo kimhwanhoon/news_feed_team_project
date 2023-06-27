@@ -45,7 +45,7 @@ function LoginModal() {
             type="button"
             className="input modal-button"
             value="Login"
-            onClick={() => loginEmailPassword(emailValue, passwordValue, dispatch)}
+            onClick={() => loginEmailPassword(emailValue, passwordValue, dispatch, setEmailValue, setPasswordValue)}
           />
         </div>
         <div className="modal-divider">
