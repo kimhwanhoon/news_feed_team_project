@@ -7,21 +7,30 @@ const Heart=styled.img`
     width:30px;
     height:30px;
 `
-
-const HeartBtn = () => {
-    const [isLiked, setIsLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(0);
-  
-    const handleLikeClick = () => {
-      setIsLiked(!isLiked);
-      setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
-    };
+const HeartBtn = ({ like, onClick }) => {
     return (
-        <>
-        <Heart src={isLiked?heartImg:emptyHeartImg } onClick={handleLikeClick}/>
-        </>
-
+      <>
+        <Heart src={like ? heartImg : emptyHeartImg} onClick={onClick} />
+      </>
     );
-};
+  };
 
-export default HeartBtn;
+  export default HeartBtn;
+
+  
+//const HeartBtn = () => {
+    //const [isLiked, setIsLiked] = useState(false);
+    //const [likeCount, setLikeCount] = useState(0);
+  
+   // const handleLikeClick = () => {
+      //setIsLiked(!isLiked);
+      //setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+    //};
+    //return (
+        //<>
+        //<Heart src={isLiked?heartImg:emptyHeartImg } onClick={handleLikeClick}/>
+        //</>
+
+   // );
+//;
+
