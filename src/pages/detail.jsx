@@ -4,6 +4,7 @@ import { useState } from "react";
 import { styled } from "styled-components";
 import HeartBtn from "./Heart";
 import userImg from "../assets/user (1).png"
+import css from "styled-components";
 
 
 //modal을 구현하는데 전체적으로 필요한 css
@@ -65,7 +66,14 @@ export const DetailBox=styled.div`
     margin-left:10px;
     padding:10px;
     grid-row: 2;
-  grid-column: 1;
+    grid-column: 1;
+    overflow:auto;    
+    ${props =>
+        props.scrollable &&        //스크롤바 생성
+        css`
+          max-height: 250px;
+        `}
+    
 `
 
 //모달창 상단의 작성자 정보:DetailTitle
@@ -104,7 +112,7 @@ export const Modal =() => {
                 <ModalContainer>
                 <DetailModal>
                 <DetailTitle><UserImg/>nickname</DetailTitle>
-                <DetailBox>글이 들어가는 곳</DetailBox>
+                <DetailBox scrollable>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Saepe, a sequi! Id fugiat ratione quaerat quia pariatur perspiciatis commodi error sit vel ipsam nihil ea accusantium cupiditate quibusdam, doloribus Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam architecto quas rerum sunt, officiis neque, aut quasi porro saepe, laboriosam provident iure praesentium doloremque cupiditate facilis cumque eligendi! Odit,Lorem ipsum dolor sit amet consectetur, adipisicing elit. Incidunt quam sit, sunt harum alias error repellendus neque repellat rem nemo quod nobis velit impedit aut non voluptate possimus laudantium doloremque?;</DetailBox>
                 <ButtonContainer>
                 <HeartBtn like={isLiked} onClick={handleLikeClick} />
                 <button onClick={openModalHandler}>close</button>
