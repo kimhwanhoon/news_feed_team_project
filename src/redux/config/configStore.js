@@ -1,8 +1,9 @@
 import { createStore } from 'redux';
 import { combineReducers } from 'redux';
+import feeds from 'redux/modules/\bfeeds';
 
 const rootReducer = combineReducers({
-  // reducer 들을 여기에 적는다.
+  feeds
 });
 const store = createStore(rootReducer);
 
