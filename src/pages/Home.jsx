@@ -1,12 +1,19 @@
 import React from 'react';
+import MyPage from './ProfilePage';
 
-function Home() {
+const MyPageButton = () => {
+  const [showMyPage, setShowMyPage] = React.useState(false);
+
+  const handleShowMyPage = () => {
+    setShowMyPage(true);
+  };
+
   return (
     <div>
-      <h1>Home</h1>
-      <h2>메인 페이지</h2>
+      <button onClick={handleShowMyPage}>마이페이지</button>
+      {showMyPage && <MyPage />}
     </div>
   );
-}
+};
 
-export default Home;
+export default MyPageButton;
