@@ -1,13 +1,26 @@
 import { signupOnClickHandler } from 'components/Header';
 import { loginWithGithub, loginWithGoogle, signingUp } from 'firebaseConfig/firebaseAuth';
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 const inputOnChangeHandler = (e, setFn) => {
   setFn(e.target.value);
 };
 
 function SignUpModal() {
   const dispatch = useDispatch();
+
+  const isLoginSuccess = useSelector((state) => {
+    return state.isLoginSuccess.loginSuccess;
+  });
+
+  useEffect(() => {
+    if (isLoginSuccess) {
+      setEmailValue('');
+      setPasswordValue('');
+      setConfirmPasswordValue('');
+    }
+  }, [isLoginSuccess]);
+
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   const [confirmPasswordValue, setConfirmPasswordValue] = useState('');

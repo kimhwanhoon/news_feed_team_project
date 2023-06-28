@@ -11,7 +11,7 @@ import {
   signInWithPopup,
   signOut
 } from 'firebase/auth';
-import { loginSucess } from 'redux/modules/isLoginSuccess';
+import { loginSucess, logoutSucess } from 'redux/modules/isLoginSuccess';
 import {
   deleteUserDataBySignout,
   saveUserDataWithEmail,
@@ -36,10 +36,9 @@ export const loginWithEmailPassword = async (email, password, dispatch) => {
     dispatch(saveUserDataWithEmail(userCredential));
     dispatch(loginSucess());
     login$outToggle();
-    loginOnClickHandler();
+    loginSuccessCloseModal();
     // 유저의 닉네임이 없으면 이메일로 내보내기
     alert(`Welcome, ${userCredential.user.displayName ?? userCredential.user.email}!`);
-    document.getElementById('modal-login-email-input').value = '';
     // 에러 핸들링
   } catch (error) {
     if (error.code === 'auth/wrong-password') {
@@ -65,11 +64,10 @@ export const loginWithGoogle = (dispatch) => {
       //const user = result.user;
       const additionalUserInfo = getAdditionalUserInfo(result);
       // dispatch로 store에 유저정보 업데이트하기
-      console.log('additionalUserInfo', additionalUserInfo);
       dispatch(saveUserDataWithSocial(additionalUserInfo));
       login$outToggle();
       socialLoginGreetingUser(additionalUserInfo);
-      socialLoginSuccessHandler();
+      loginSuccessCloseModal();
     })
     .catch((error) => {
       console.log(error);
@@ -102,11 +100,10 @@ export const loginWithGithub = (dispatch) => {
       // const user = result.user;
       const additionalUserInfo = getAdditionalUserInfo(result);
       // dispatch로 store에 유저정보 업데이트하기
-      console.log('additionalUserInfo', additionalUserInfo);
       dispatch(saveUserDataWithSocial(additionalUserInfo));
       login$outToggle();
       socialLoginGreetingUser(additionalUserInfo);
-      socialLoginSuccessHandler();
+      loginSuccessCloseModal();
     })
     .catch((error) => {
       console.log(error);
@@ -133,6 +130,7 @@ export const logOut = (dispatch) => {
   signOut(auth)
     .then(() => {
       dispatch(deleteUserDataBySignout());
+      dispatch(logoutSucess());
       login$outToggle();
       alert('안전하게 로그아웃되었습니다.');
     })
@@ -172,6 +170,7 @@ export const signingUp = (dispatch, email, password, confirmPassword) => {
       login$outToggle();
       signupOnClickHandler();
       dispatch(signupUserDataUpdate(user));
+      dispatch(loginSucess());
       alert(`회원가입 완료!\n환영합니다. ${user.email}`);
       // ...
     })
@@ -191,8 +190,8 @@ export const signingUp = (dispatch, email, password, confirmPassword) => {
     });
 };
 
-// Social 로그인 성공 시 모달 닫기
-const socialLoginSuccessHandler = () => {
+// 로그인 성공 시 모달 닫기
+const loginSuccessCloseModal = () => {
   if (!document.getElementById('login-modal').classList.contains('hidden')) {
     document.getElementById('login-modal').classList.toggle('hidden');
   } else {
