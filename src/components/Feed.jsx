@@ -1,5 +1,3 @@
-// components/Todo.js
-
 import React, { useEffect, useState } from 'react';
 import FeedItem from './FeedItem';
 import { addDoc, collection, getDocs, query } from 'firebase/firestore';
@@ -13,15 +11,11 @@ const Feed = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // collection 이름이 todos인 collection의 모든 document를 가져옵니다.
       const q = query(collection(db, 'feeds'));
       const querySnapshot = await getDocs(q);
 
       const initialFeeds = [];
 
-      // document의 id와 데이터를 initialTodos에 저장합니다.
-      // doc.id의 경우 따로 지정하지 않는 한 자동으로 생성되는 id입니다.
-      // doc.data()를 실행하면 해당 document의 데이터를 가져올 수 있습니다.
       querySnapshot.forEach((doc) => {
         initialFeeds.push({ id: doc.id, ...doc.data() });
       });

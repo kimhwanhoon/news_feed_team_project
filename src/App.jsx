@@ -2,9 +2,10 @@ import './App.css';
 import { useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
-import Auth from './components/Auth';
+// import Auth from './components/Auth';
 import Feed from './components/Feed';
 import Searchbar from './components/Searchbar';
+import Detail from './components/Detail';
 
 const App = () => {
   useEffect(() => {
@@ -23,6 +24,7 @@ const App = () => {
         <button style={{ marginRight: '10px' }}>Login</button>
       </div>
       <Feed />
+      <Detail />
     </div>
   );
 };
