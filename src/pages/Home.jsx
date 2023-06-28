@@ -1,7 +1,6 @@
 import React from 'react';
-import { Modal } from '../shared/detail';
-import openModalHandler from '../shared/detail';
-import { openModalHandler, Modal } from '.detail';
+import { openModalHandler, Modal } from '../shared/detail';
+
 
 function Home() {
   return (

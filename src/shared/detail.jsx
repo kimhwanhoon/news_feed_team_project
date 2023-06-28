@@ -4,6 +4,7 @@ import { styled } from 'styled-components';
 //import userImg from 'public/assets/user (1).png';
 import css from 'styled-components';
 import HeartBtn from '../modal/Heart';
+import FeedItem from 'components/FeedItem';
 
 //modal을 구현하는데 전체적으로 필요한 css
 export const ModalContainer = styled.div`
@@ -47,7 +48,7 @@ export const ModalBackdrop = styled.div`
   right: 0;
   bottom: 0;
   background-color: transparent;
-  z-index: 9998;
+  z-index: 1;
 `;
 
 export const DetailBox = styled.div`
@@ -87,25 +88,41 @@ export const DetailTitle = styled.p`
 
 export const Modal = ({ closeModal, text, isOpen }) => {
   const [isLiked, setIsLiked] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(isOpen);
   const handleLikeClick = () => {
     setIsLiked(!isLiked);
   };
 
+  const handleBackdropClick = () => {
+      
+      closeModal();
+      setIsModalOpen(false);
+    };
+
+  
+
+  const openModalHandler = () => {
+    setIsModalOpen(true);
+  };
+
+
+  
   // useEffect(() => {
   //   setIsOpen(true);
   // }, []);
 
-  const closeAndResetModal = () => {
-    // setIsOpen(false);
-    setIsLiked(false);
-    closeModal();
-  };
+// const closeAndResetModal = () => {
+//       setIsOpen(false);
+//      setIsLiked(false);
+//      closeModal();
+//   };
 
   return (
     <>
-      {isOpen && (
-        <ModalContainer>
+    {isModalOpen && (
+      <>
+      <ModalContainer>
+      <ModalBackdrop onClick={handleBackdropClick} />
           <DetailModal>
             <DetailTitle>
               <User src={'../assets/user (1).png'} />
@@ -114,14 +131,17 @@ export const Modal = ({ closeModal, text, isOpen }) => {
             <DetailBox scrollable>{text}</DetailBox>
             <ButtonContainer>
               <HeartBtn like={isLiked} onClick={handleLikeClick} />
-              <button onClick={closeAndResetModal}>닫기</button>
+              <button onClick={handleBackdropClick}>닫기</button>
             </ButtonContainer>
+            
           </DetailModal>
-          <ModalBackdrop onClick={closeAndResetModal} />
+          
         </ModalContainer>
-      )}
+        
     </>
-  );
+  )}
+</>
+);
 };
 
 export default Modal;

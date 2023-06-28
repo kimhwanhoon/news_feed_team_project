@@ -4,6 +4,9 @@ import { db } from '../firebase';
 import styled from 'styled-components';
 import Modal from '../shared/Detail';
 
+
+
+
 const FeedItem = ({ feeds, feed, setFeeds }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -36,11 +39,19 @@ const FeedItem = ({ feeds, feed, setFeeds }) => {
   };
 
   const openModal = () => {
+    if (!isModalOpen) {
     setIsModalOpen(true);
-  };
+  }
+};
 
-  const closeModal = () => {
+  // const closeAndResetModal = () => {
+  //   setIsModalOpen(false);
+  // };
+
+   const closeModal = () => {
+    if (isModalOpen) {
     setIsModalOpen(false);
+    }
   };
 
   return (
