@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from "react";
 import { styled } from "styled-components";
-import heartImg from '../assets/heart (1).png'
-import emptyHeartImg from '../assets/heart.png'
+//import heartImg from '/assets'
+//import emptyHeartImg from '../assets/heart.png'
 
 const Heart=styled.img`
     width:30px;
@@ -10,7 +10,7 @@ const Heart=styled.img`
 const HeartBtn = ({ like, onClick }) => {
     return (
       <>
-        <Heart src={like ? heartImg : emptyHeartImg} onClick={onClick} />
+        <Heart src={like ? '../assets/heart (1).png' : '../assets/heart.png'} onClick={onClick} />
       </>
     );
   };

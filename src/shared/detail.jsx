@@ -2,9 +2,10 @@
 import React from "react";
 import { useState } from "react";
 import { styled } from "styled-components";
-import HeartBtn from "./Heart";
-import userImg from "../assets/user (1).png"
+import HeartBtn from "../modal/Heart";
+//import userImg from "../assets/user (1).png"
 import css from "styled-components";
+
 
 
 //modal을 구현하는데 전체적으로 필요한 css
@@ -89,7 +90,7 @@ export const DetailTitle=styled.p`
 export const UserImg=()=>{
     return(
         <>
-        <User src={userImg}/>
+        <User src={'../assets/user (1).png'}/>
         </>
     )
     }
@@ -106,7 +107,7 @@ export const Modal =() => {
       };
         return(
          <>
-            <button onClick={openModalHandler}>더보기</button>
+            <button  onClick={openModalHandler}>더보기</button>
 
             {isOpen && (
                 <ModalContainer>
