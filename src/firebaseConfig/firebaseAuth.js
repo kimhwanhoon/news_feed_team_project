@@ -1,4 +1,5 @@
-import { login$outToggle, loginOnClickHandler, signupOnClickHandler } from 'components/Header';
+import { login$outToggle, signupOnClickHandler } from 'components/Header';
+import { toggleForgotPasswordModal } from 'components/auth/ForgotPassword';
 import { initializeApp } from 'firebase/app';
 import {
   GithubAuthProvider,
@@ -7,10 +8,12 @@ import {
   getAdditionalUserInfo,
   getAuth,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut
 } from 'firebase/auth';
+import { sentMailSucess } from 'redux/modules/forgotMailSent';
 import { loginSucess, logoutSucess } from 'redux/modules/isLoginSuccess';
 import {
   deleteUserDataBySignout,
@@ -59,9 +62,6 @@ export const loginWithGoogle = (dispatch) => {
   const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider)
     .then((result) => {
-      //const credential = GoogleAuthProvider.credentialFromResult(result);
-      //const token = credential.accessToken;
-      //const user = result.user;
       const additionalUserInfo = getAdditionalUserInfo(result);
       // dispatch로 store에 유저정보 업데이트하기
       dispatch(saveUserDataWithSocial(additionalUserInfo));
@@ -70,19 +70,13 @@ export const loginWithGoogle = (dispatch) => {
       loginSuccessCloseModal();
     })
     .catch((error) => {
-      console.log(error);
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.customData.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
       // ...
       const errorDetail = [
-        { 'error code': errorCode },
-        { 'error message': errorMessage },
-        { email: email },
+        { 'error code': error.code },
+        { 'error message': error.message },
+        { email: error.customData.email },
         { credential: credential }
       ];
       console.log(errorDetail);
@@ -95,9 +89,6 @@ export const loginWithGithub = (dispatch) => {
   const provider = new GithubAuthProvider();
   signInWithPopup(auth, provider)
     .then((result) => {
-      // const credential = GithubAuthProvider.credentialFromResult(result);
-      // const token = credential.accessToken;
-      // const user = result.user;
       const additionalUserInfo = getAdditionalUserInfo(result);
       // dispatch로 store에 유저정보 업데이트하기
       dispatch(saveUserDataWithSocial(additionalUserInfo));
@@ -106,19 +97,12 @@ export const loginWithGithub = (dispatch) => {
       loginSuccessCloseModal();
     })
     .catch((error) => {
-      console.log(error);
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.customData.email;
-      // The AuthCredential type that was used.
       const credential = GithubAuthProvider.credentialFromError(error);
       // ...
       const errorDetail = [
-        { 'error code': errorCode },
-        { 'error message': errorMessage },
-        { email: email },
+        { 'error code': error.code },
+        { 'error message': error.message },
+        { email: error.customData.email },
         { credential: credential }
       ];
       console.log(errorDetail);
@@ -158,21 +142,19 @@ export const signingUp = (dispatch, email, password, confirmPassword) => {
   if (password !== confirmPassword) {
     alert('비밀번호가 다릅니다. 다시 확인해주세요.');
     return;
-  } else if (password.length < 8) {
+  }
+  if (password.length < 8) {
     alert('비밀번호는 8자리 이상으로 만들어주세요.');
     return;
   }
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      // Signed in
       const user = userCredential.user;
-      console.log(user);
       login$outToggle();
       signupOnClickHandler();
       dispatch(signupUserDataUpdate(user));
       dispatch(loginSucess());
       alert(`회원가입 완료!\n환영합니다. ${user.email}`);
-      // ...
     })
     .catch((error) => {
       if (error.code === 'auth/invalid-email') {
@@ -181,12 +163,12 @@ export const signingUp = (dispatch, email, password, confirmPassword) => {
       } else if (error.code === 'auth/email-already-in-use') {
         alert(`이미 가입되어있는 메일입니다.`);
         return;
+      } else if (error.code === 'auth/weak-password') {
+        alert(`비밀번호가 너무 약합니다. 더 강력한 비밀번호를 사용해주세요.`);
+        return;
       }
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      const errorDetails = [errorCode, errorMessage];
+      const errorDetails = [error.code, error.message];
       console.log(errorDetails);
-      // ..
     });
 };
 
@@ -206,4 +188,22 @@ const socialLoginGreetingUser = (additionalUserInfo) => {
   } else {
     alert(`Welcome back, ${additionalUserInfo.profile.name ?? additionalUserInfo.profile.email}!`);
   }
+};
+
+// Forgot password => 비밀번호 재설정 이메일 보내기
+export const sendResetPasswordMail = (email, dispatch) => {
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      alert('이메일 발송완료!\n이메일 수신함을 확인해주세요.');
+      toggleForgotPasswordModal();
+      dispatch(sentMailSucess());
+    })
+    .catch((error) => {
+      if (error.code === 'auth/user-not-found') {
+        alert(`등록된 계정이 아닙니다.`);
+        return;
+      }
+      const errorDetail = [error.code, error.message];
+      console.log(errorDetail);
+    });
 };

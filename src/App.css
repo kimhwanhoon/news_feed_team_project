@@ -20,7 +20,18 @@
   transition: ease-in-out 0.3s;
   background-color: #fff;
 }
-
+.small {
+  width: 450px;
+  height: 455px;
+  background-color: #ffffff;
+}
+.xs {
+  width: 450px;
+  height: 300px;
+}
+#modal-email-verification-close-button {
+  background-color: rgb(89, 185, 217);
+}
 .modal {
   position: relative;
   width: 100%;
@@ -38,6 +49,7 @@
   margin-bottom: 1rem;
 }
 .modal-welcome-h2 {
+  line-height: 1.4;
   font-size: 1.2rem;
   color: #9599a2;
 }
