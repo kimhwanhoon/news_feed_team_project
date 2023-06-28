@@ -1,6 +1,4 @@
 import Header from 'components/Header';
-import LoginModal from 'components/auth/Login';
-import SignUpModal from 'components/auth/SignUp';
 import React from 'react';
 
 function Home() {
@@ -9,8 +7,6 @@ function Home() {
       <Header />
       <div></div>
       <div></div>
-      <LoginModal />
-      <SignUpModal />
     </>
   );
 }

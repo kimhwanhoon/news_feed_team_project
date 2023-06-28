@@ -1,37 +1,9 @@
-import { loginWithGithub, loginWithGoogle, signupEmailPassword } from 'firebaseConfig/firebaseAuth';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { actionTypes } from 'redux/modules/user';
 const inputOnChangeHandler = (e, setFn) => {
   setFn(e.target.value);
 };
 
-const signUpClickHandler = (
-  emailValue,
-  passwordValue,
-  confirmPasswordValue,
-  dispatch,
-  setEmailValue,
-  setPasswordValue,
-  setConfirmPasswordValue
-) => {
-  if (passwordValue.length >= 8) {
-    if (passwordValue === confirmPasswordValue) {
-      signupEmailPassword(emailValue, passwordValue);
-      setEmailValue('');
-      setPasswordValue('');
-      setConfirmPasswordValue('');
-      dispatch({ type: actionTypes.SIGNUP, payload: emailValue });
-    } else {
-      alert('Please confirm your password again.');
-    }
-  } else {
-    alert('Password should be at least 8 characters.');
-  }
-};
-
 function SignUpModal() {
-  const dispatch = useDispatch();
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
@@ -66,23 +38,7 @@ function SignUpModal() {
             placeholder="Confirm password"
           />
 
-          <input
-            id="modal-signup-button"
-            type="button"
-            className="input modal-button"
-            value="Sign Up"
-            onClick={() =>
-              signUpClickHandler(
-                emailValue,
-                passwordValue,
-                confirmPasswordValue,
-                dispatch,
-                setEmailValue,
-                setPasswordValue,
-                setConfirmPasswordValue
-              )
-            }
-          />
+          <input id="modal-signup-button" type="button" className="input modal-button" value="Sign Up" />
         </div>
         <div className="modal-divider">
           <div></div>
@@ -90,11 +46,11 @@ function SignUpModal() {
           <div></div>
         </div>
         <div className="modal-social-icon-container">
-          <button onClick={() => loginWithGoogle(dispatch)}>
+          <button>
             <img src="img/Google.png" alt="Google icon" />
             Google
           </button>
-          <button onClick={() => loginWithGithub(dispatch)}>
+          <button>
             <img src="img/github.png" alt="github icon" />
             Github
           </button>
@@ -102,7 +58,7 @@ function SignUpModal() {
         <div className="modal-last-suggestion-container">
           <h3 id="modal-last-text">
             You already have account?{' '}
-            <span onClick={signInOnClickHandler} id="modal-sign-up-suggestion">
+            <span onClick={signinOnClickHandler} id="modal-sign-up-suggestion">
               Sign In
             </span>
           </h3>
@@ -114,9 +70,9 @@ function SignUpModal() {
 
 export default SignUpModal;
 
-const signInOnClickHandler = () => {
-  document.getElementById('login-modal').classList.toggle('show');
+const signinOnClickHandler = () => {
+  //document.getElementById('login-modal').classList.toggle('show');
   document.getElementById('login-modal').classList.toggle('hidden');
-  document.getElementById('signup-modal').classList.toggle('show');
+  //document.getElementById('signup-modal').classList.toggle('show');
   document.getElementById('signup-modal').classList.toggle('hidden');
 };

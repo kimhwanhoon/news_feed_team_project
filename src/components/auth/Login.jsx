@@ -1,20 +1,15 @@
-import { loginEmailPassword, loginWithGithub, loginWithGoogle } from 'firebaseConfig/firebaseAuth';
-import React, { useState } from 'react';
+import { loginWithEmailPassword, loginWithGithub, loginWithGoogle } from 'firebaseConfig/firebaseAuth';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-
-export const openLoginModal = () => {
-  const modalContainer = document.getElementById('login-modal');
-  modalContainer.classList.toggle('hidden');
-  modalContainer.classList.toggle('show');
-};
 
 const inputOnChangeHandler = (e, setFn) => {
   setFn(e.target.value);
 };
-//
 
 function LoginModal() {
+  //
   const dispatch = useDispatch();
+  //
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   return (
@@ -45,7 +40,7 @@ function LoginModal() {
             type="button"
             className="input modal-button"
             value="Login"
-            onClick={() => loginEmailPassword(emailValue, passwordValue, dispatch, setEmailValue, setPasswordValue)}
+            onClick={() => loginWithEmailPassword(emailValue, passwordValue, dispatch)}
           />
         </div>
         <div className="modal-divider">
@@ -66,7 +61,7 @@ function LoginModal() {
         <div className="modal-last-suggestion-container">
           <h3 id="modal-last-text">
             Don't you have an account?{' '}
-            <span id="modal-sign-up-suggestion" onClick={signUpOnClickHandler}>
+            <span id="modal-sign-up-suggestion" onClick={signupOnClickHandler}>
               Sign Up
             </span>
           </h3>
@@ -78,24 +73,7 @@ function LoginModal() {
 
 export default LoginModal;
 
-const signUpOnClickHandler = () => {
-  const loginModal = document.getElementById('login-modal');
-  const signUpModal = document.getElementById('signup-modal');
-  loginModal.classList.toggle('show');
-  loginModal.classList.toggle('hidden');
-  signUpModal.classList.toggle('show');
-  signUpModal.classList.toggle('hidden');
-};
-
-export const onSuccessfulHandler = () => {
-  const loginModal = document.getElementById('login-modal');
-  const signUpModal = document.getElementById('signup-modal');
-
-  if (loginModal.classList.contains('show')) {
-    loginModal.classList.toggle('hidden');
-    loginModal.classList.toggle('show');
-  } else if (signUpModal.classList.contains('show')) {
-    signUpModal.classList.toggle('hidden');
-    signUpModal.classList.toggle('show');
-  }
+const signupOnClickHandler = () => {
+  document.getElementById('login-modal').classList.toggle('hidden');
+  document.getElementById('signup-modal').classList.toggle('hidden');
 };
