@@ -1,19 +1,34 @@
 import React from 'react';
-import MyPage from './ProfilePage';
+import Header from 'components/Header';
+import { styled } from 'styled-components';
 
-const MyPageButton = () => {
-  const [showMyPage, setShowMyPage] = React.useState(false);
+// import MyPage from './ProfilePage';
 
-  const handleShowMyPage = () => {
-    setShowMyPage(true);
-  };
+// const MyPageButton = () => {
+//   const [showMyPage, setShowMyPage] = React.useState(false);
 
+//   const handleShowMyPage = () => {
+//     setShowMyPage(true);
+//   };
+// };
+// <button onClick={handleShowMyPage}>마이페이지</button>;
+// {
+//   showMyPage && <MyPage />;
+// }
+
+function Home() {
   return (
-    <div>
-      <button onClick={handleShowMyPage}>마이페이지</button>
-      {showMyPage && <MyPage />}
-    </div>
+    <StyledHome>
+      <Header />
+      <div></div>
+      <div></div>
+    </StyledHome>
   );
-};
+}
 
-export default MyPageButton;
+export default Home;
+
+const StyledHome = styled.div`
+  height: 100vh;
+  background-color: #999;
+`;
