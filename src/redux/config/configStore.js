@@ -1,6 +1,6 @@
 import { createStore } from 'redux';
 import { combineReducers } from 'redux';
-import feeds from 'redux/modules/\bfeeds';
+import feeds from 'redux/modules/feeds';
 
 const rootReducer = combineReducers({
   feeds
