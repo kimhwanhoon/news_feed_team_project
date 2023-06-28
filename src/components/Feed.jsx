@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 const Feed = () => {
   const [feeds, setFeeds] = useState([]);
-
   const [text, setText] = useState('');
 
   useEffect(() => {
@@ -27,9 +26,7 @@ const Feed = () => {
   }, []);
 
   const onChange = (event) => {
-    const {
-      target: { name, value }
-    } = event;
+    const { name, value } = event.target;
     if (name === 'text') {
       setText(value);
     }
@@ -40,11 +37,10 @@ const Feed = () => {
     const newFeed = { text: text };
 
     const collectionRef = collection(db, 'feeds');
-    const { id } = await addDoc(collectionRef, newFeed);
+    const docRef = await addDoc(collectionRef, newFeed);
+    const id = docRef.id;
 
-    setFeeds((prev) => {
-      return [...feeds, { ...newFeed, id }];
-    });
+    setFeeds((prev) => [...prev, { ...newFeed, id }]);
     setText('');
   };
 
@@ -55,18 +51,18 @@ const Feed = () => {
       </StyledBtn>
       <form style={{ display: 'flex', justifyContent: 'center' }}>
         <div>
-          <label>newFeed(임시): </label>
+          <label>New Feed:</label>
           <input type="text" value={text} name="text" onChange={onChange} required />
-          <button onClick={addFeed}>추가</button>
+          <button onClick={addFeed}>Add</button>
         </div>
       </form>
 
       <div>
         {feeds
           .filter((feed) => !feed.isDone)
-          .map((feed) => {
-            return <FeedItem key={feed.id} feeds={feeds} feed={feed} setFeeds={setFeeds} />;
-          })}
+          .map((feed) => (
+            <FeedItem key={feed.id} feeds={feeds} feed={feed} setFeeds={setFeeds} />
+          ))}
       </div>
     </div>
   );
@@ -76,4 +72,5 @@ const StyledBtn = styled.div`
   display: flex;
   justify-content: center;
 `;
+
 export default Feed;
