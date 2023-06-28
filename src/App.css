@@ -18,9 +18,11 @@
   box-shadow: 0 0 5px 0 #777777aa;
   border-radius: 12px;
   transition: ease-in-out 0.3s;
+  background-color: #fff;
 }
 
 .modal {
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -146,3 +148,16 @@
   text-decoration: underline;
 }
 /*  모달  */
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 2rem;
+  background-color: transparent;
+  border: none;
+  color: rgb(114, 114, 114);
+  font-size: 2em;
+  cursor: pointer;
+}
+.close-button:hover {
+  color: rgb(35, 35, 35);
+}

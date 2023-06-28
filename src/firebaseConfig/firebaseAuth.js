@@ -1,7 +1,9 @@
+import { login$outToggle, loginOnClickHandler, signupOnClickHandler } from 'components/Header';
 import { initializeApp } from 'firebase/app';
 import {
   GithubAuthProvider,
   GoogleAuthProvider,
+  createUserWithEmailAndPassword,
   getAdditionalUserInfo,
   getAuth,
   onAuthStateChanged,
@@ -9,7 +11,13 @@ import {
   signInWithPopup,
   signOut
 } from 'firebase/auth';
-import { deleteUserDataBySignout, saveUserDataWithEmail, saveUserDataWithSocial } from 'redux/modules/user';
+import { loginSucess } from 'redux/modules/isLoginSuccess';
+import {
+  deleteUserDataBySignout,
+  saveUserDataWithEmail,
+  saveUserDataWithSocial,
+  signupUserDataUpdate
+} from 'redux/modules/user';
 
 const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG);
 
@@ -26,8 +34,12 @@ export const loginWithEmailPassword = async (email, password, dispatch) => {
     const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
     // dispatch로 store에 유저정보 업데이트하기
     dispatch(saveUserDataWithEmail(userCredential));
+    dispatch(loginSucess());
+    login$outToggle();
+    loginOnClickHandler();
     // 유저의 닉네임이 없으면 이메일로 내보내기
     alert(`Welcome, ${userCredential.user.displayName ?? userCredential.user.email}!`);
+    document.getElementById('modal-login-email-input').value = '';
     // 에러 핸들링
   } catch (error) {
     if (error.code === 'auth/wrong-password') {
@@ -55,7 +67,9 @@ export const loginWithGoogle = (dispatch) => {
       // dispatch로 store에 유저정보 업데이트하기
       console.log('additionalUserInfo', additionalUserInfo);
       dispatch(saveUserDataWithSocial(additionalUserInfo));
-      alert('로그인 완료!');
+      login$outToggle();
+      socialLoginGreetingUser(additionalUserInfo);
+      socialLoginSuccessHandler();
     })
     .catch((error) => {
       console.log(error);
@@ -90,7 +104,9 @@ export const loginWithGithub = (dispatch) => {
       // dispatch로 store에 유저정보 업데이트하기
       console.log('additionalUserInfo', additionalUserInfo);
       dispatch(saveUserDataWithSocial(additionalUserInfo));
-      alert('로그인 완료!');
+      login$outToggle();
+      socialLoginGreetingUser(additionalUserInfo);
+      socialLoginSuccessHandler();
     })
     .catch((error) => {
       console.log(error);
@@ -117,6 +133,7 @@ export const logOut = (dispatch) => {
   signOut(auth)
     .then(() => {
       dispatch(deleteUserDataBySignout());
+      login$outToggle();
       alert('안전하게 로그아웃되었습니다.');
     })
     .catch((error) => {
@@ -136,4 +153,58 @@ export const loggedInUserCheck = () => {
       }
     });
   });
+};
+
+// 회원가입하기
+export const signingUp = (dispatch, email, password, confirmPassword) => {
+  if (password !== confirmPassword) {
+    alert('비밀번호가 다릅니다. 다시 확인해주세요.');
+    return;
+  } else if (password.length < 8) {
+    alert('비밀번호는 8자리 이상으로 만들어주세요.');
+    return;
+  }
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in
+      const user = userCredential.user;
+      console.log(user);
+      login$outToggle();
+      signupOnClickHandler();
+      dispatch(signupUserDataUpdate(user));
+      alert(`회원가입 완료!\n환영합니다. ${user.email}`);
+      // ...
+    })
+    .catch((error) => {
+      if (error.code === 'auth/invalid-email') {
+        alert(`메일 주소를 다시 확인해주세요.`);
+        return;
+      } else if (error.code === 'auth/email-already-in-use') {
+        alert(`이미 가입되어있는 메일입니다.`);
+        return;
+      }
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      const errorDetails = [errorCode, errorMessage];
+      console.log(errorDetails);
+      // ..
+    });
+};
+
+// Social 로그인 성공 시 모달 닫기
+const socialLoginSuccessHandler = () => {
+  if (!document.getElementById('login-modal').classList.contains('hidden')) {
+    document.getElementById('login-modal').classList.toggle('hidden');
+  } else {
+    document.getElementById('signup-modal').classList.toggle('hidden');
+  }
+};
+
+// Social 로그인 성공 시 환영 메세지 보내기
+const socialLoginGreetingUser = (additionalUserInfo) => {
+  if (additionalUserInfo.isNewUser) {
+    alert(`Thank you for joining us, ${additionalUserInfo.profile.name ?? additionalUserInfo.profile.email}!`);
+  } else {
+    alert(`Welcome back, ${additionalUserInfo.profile.name ?? additionalUserInfo.profile.email}!`);
+  }
 };

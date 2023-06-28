@@ -1,6 +1,7 @@
+import { loginOnClickHandler } from 'components/Header';
 import { loginWithEmailPassword, loginWithGithub, loginWithGoogle } from 'firebaseConfig/firebaseAuth';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const inputOnChangeHandler = (e, setFn) => {
   setFn(e.target.value);
@@ -10,11 +11,24 @@ function LoginModal() {
   //
   const dispatch = useDispatch();
   //
+  const isLoginSuccess = useSelector((state) => {
+    return state.isLoginSuccess.loginSuccess;
+  });
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
+  useEffect(() => {
+    if (isLoginSuccess) {
+      setEmailValue('');
+      setPasswordValue('');
+    }
+  }, [isLoginSuccess]);
+
   return (
     <section id="login-modal" className="modal-container hidden">
       <div className="modal">
+        <button onClick={loginOnClickHandler} className="close-button">
+          &times;
+        </button>
         <div className="modal-h-container">
           <h1 className="modal-welcome-h1">Welcome back!</h1>
           <h2 className="modal-welcome-h2">Please log in.</h2>
@@ -22,6 +36,7 @@ function LoginModal() {
         <div className="modal-input-container">
           <input
             className="input text"
+            id="modal-login-email-input"
             type="email"
             value={emailValue}
             onChange={(e) => inputOnChangeHandler(e, setEmailValue)}
@@ -29,6 +44,7 @@ function LoginModal() {
           />
           <input
             className="input text"
+            id="modal-login-password-input"
             type="password"
             value={passwordValue}
             onChange={(e) => inputOnChangeHandler(e, setPasswordValue)}

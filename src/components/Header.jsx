@@ -13,9 +13,9 @@ function Header() {
     loggedInUserCheck()
       .then((userData) => {
         if (!userData) {
-          dispatch({ type: 'default' });
+          return;
         } else {
-          console.log('userdata', userData);
+          login$outToggle();
           dispatch(fetchUserDate(userData));
         }
       })
@@ -27,50 +27,55 @@ function Header() {
   // store에서 userdata를 구독하여
   // 나중에 dispatch로 userdata가 변경되면 재랜더링을 되게 한다.
   const subscribedUserData = useSelector((state) => {
-    console.log('subscribedUserData의 state:', state);
     return state.userData;
   });
-  console.log('subscribedUserData: ', subscribedUserData);
   return (
     <>
       <StyledHeader>
         <h1>Logo</h1>
-        <div id="header-profile-div">
-          <img
-            alt=""
-            id="profile-image"
-            src={
-              // subscribedUserData.~ : loggedInUserCheck()에서 가져온 userData
-              // subscribedUserData.profile.picture: Google
-              // subscribedUserData.profile.avatar_url: Github
-              // 맨 처음 로드시 아무런 정보가 없기 때문에 옵셔널 체이닝(?.)을 사용하여 에러를 예방
-              subscribedUserData?.photoURL ??
-              subscribedUserData?.profile?.picture ??
-              subscribedUserData?.profile?.avatar_url ??
-              'img/profile.png'
-            }
-          />
-          <p>
-            {
-              // subscribedUserData.~ : loggedInUserCheck()에서 가져온 userData
-              // subscribedUserData.user: Google
-              // subscribedUserData.profile: Github
-              // 맨 처음 로드시 아무런 정보가 없기 때문에 옵셔널 체이닝(?.)을 사용하여 에러를 예방
-              subscribedUserData?.displayName ??
-                subscribedUserData?.email ??
-                subscribedUserData?.user?.displayName ??
-                subscribedUserData?.profile?.name ??
-                subscribedUserData?.profile?.email ??
-                subscribedUserData?.user?.email ??
-                'Not signed in'
-            }
-          </p>
+        <div id="header-right-div">
+          <div id="header-button-div">
+            <button id="header-login-button" onClick={loginOnClickHandler}>
+              log in
+            </button>
+            <button id="header-logout-button" className="hidden" onClick={() => logOut(dispatch)}>
+              log out
+            </button>
+          </div>
+          <div id="header-profile-div">
+            <img
+              alt=""
+              id="profile-image"
+              src={
+                // subscribedUserData.~ : loggedInUserCheck()에서 가져온 userData
+                // subscribedUserData.profile.picture: Google
+                // subscribedUserData.profile.avatar_url: Github
+                // 맨 처음 로드시 아무런 정보가 없기 때문에 옵셔널 체이닝(?.)을 사용하여 에러를 예방
+                subscribedUserData?.photoURL ??
+                subscribedUserData?.profile?.picture ??
+                subscribedUserData?.profile?.avatar_url ??
+                'img/profile.png'
+              }
+            />
+            <p id="header-profile-signin">
+              {
+                // subscribedUserData.~ : loggedInUserCheck()에서 가져온 userData
+                // subscribedUserData.user: Google
+                // subscribedUserData.profile: Github
+                // 맨 처음 로드시 아무런 정보가 없기 때문에 옵셔널 체이닝(?.)을 사용하여 에러를 예방
+                subscribedUserData?.displayName ??
+                  subscribedUserData?.email ??
+                  subscribedUserData?.user?.displayName ??
+                  subscribedUserData?.profile?.name ??
+                  subscribedUserData?.profile?.email ??
+                  subscribedUserData?.user?.email ??
+                  'Not signed in'
+              }
+            </p>
+          </div>
         </div>
       </StyledHeader>
-      <div>
-        <button onClick={loginOnClickHandler}>log in</button>
-        <button onClick={() => logOut(dispatch)}>log out</button>
-      </div>
+
       <LoginModal />
       <SignUpModal />
     </>
@@ -78,6 +83,20 @@ function Header() {
 }
 
 export default Header;
+export const loginOnClickHandler = (e) => {
+  if (!document.getElementById('login-modal').classList.contains('hidden') && e.target.id === 'header-login-button') {
+    return;
+  }
+  document.getElementById('login-modal').classList.toggle('hidden');
+};
+export const signupOnClickHandler = () => {
+  document.getElementById('signup-modal').classList.toggle('hidden');
+};
+
+export const login$outToggle = () => {
+  document.getElementById('header-login-button').classList.toggle('hidden');
+  document.getElementById('header-logout-button').classList.toggle('hidden');
+};
 
 const StyledHeader = styled.header`
   height: 100px;
@@ -85,20 +104,41 @@ const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  background-color: lavenderblush;
+  #header-right-div {
+    display: flex;
+    gap: 1rem;
+  }
   #header-profile-div {
-    margin-right: 2rem;
     display: flex;
     gap: 0.25rem;
     flex-direction: column;
     align-items: center;
+    margin-right: 2rem;
   }
   #profile-image {
     width: 50px;
     border-radius: 100%;
+    margin-bottom: 0.25rem;
+  }
+  h1 {
+    margin-left: 2rem;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  #header-button-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #header-button-div button {
+    background-color: whitesmoke;
+    border: none;
+    box-shadow: 0 0 5px 0px #999;
+    border-radius: 8px;
+    padding: 0.3rem 0.75rem;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
   }
 `;
-
-const loginOnClickHandler = () => {
-  document.getElementById('login-modal').classList.toggle('hidden');
-};
