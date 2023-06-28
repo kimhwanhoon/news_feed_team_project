@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from 'styled-components';
-import Modal from './Detail';
+import Modal from './detail/Detail';
 
 const FeedItem = ({ feeds, feed, setFeeds }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,11 +45,7 @@ const FeedItem = ({ feeds, feed, setFeeds }) => {
 
   return (
     <AppContainer>
-      {isModalOpen && (
-        <Modal closeModal={closeModal}>
-          <p>Modal content goes here</p>
-        </Modal>
-      )}
+      {isModalOpen && <Modal closeModal={closeModal} text={feed.text} isOpen={isModalOpen} />}
       <StyledFeed onClick={openModal}>
         <DeleteButtonWrapper>
           <button onClick={updateFeed}>수정</button>
