@@ -44,9 +44,6 @@ const FeedItem = ({ feeds, feed, setFeeds }) => {
   }
 };
 
-  // const closeAndResetModal = () => {
-  //   setIsModalOpen(false);
-  // };
 
    const closeModal = () => {
     if (isModalOpen) {
