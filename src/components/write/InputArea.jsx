@@ -16,13 +16,17 @@ const InputArea = ({ selectedOption }) => {
   const dispatch = useDispatch();
 
   const 저장하기 = (title, content) => {
+    console.log(title);
+    console.log(content);
+    console.log(selectedOption);
+
     dispatch({
       type: 'ADD_TODO',
       payload: {
         id: uuid(),
         title,
         content,
-        selectedOption,
+        selectedOption: Number(selectedOption),
         isDone: false
       }
     });
@@ -33,7 +37,6 @@ const InputArea = ({ selectedOption }) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-
           저장하기(title, content);
           alert(`저장되었습니다`);
         }}
