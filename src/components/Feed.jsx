@@ -4,8 +4,7 @@ import { addDoc, collection, getDocs, query } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from 'styled-components';
 
-const Feed = () => {
-  const [feeds, setFeeds] = useState([]);
+const Feed = ({ feeds, setFeeds, searchValue }) => {
   const [text, setText] = useState('');
 
   useEffect(() => {
@@ -44,6 +43,8 @@ const Feed = () => {
     setText('');
   };
 
+  const filteredFeeds = feeds.filter((feed) => feed.text.toLowerCase().includes(searchValue.toLowerCase()));
+
   return (
     <div>
       <StyledBtn>
@@ -63,6 +64,11 @@ const Feed = () => {
           .map((feed) => (
             <FeedItem key={feed.id} feeds={feeds} feed={feed} setFeeds={setFeeds} />
           ))}
+      </div>
+      <div>
+        {filteredFeeds.map((feed) => (
+          <FeedItem key={feed.id} feed={feed} setFeeds={setFeeds} />
+        ))}
       </div>
     </div>
   );

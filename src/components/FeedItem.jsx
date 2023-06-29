@@ -4,7 +4,7 @@ import { db } from '../firebase';
 import styled from 'styled-components';
 import Modal from './detail/Detail';
 
-const FeedItem = ({ feeds, feed, setFeeds }) => {
+const FeedItem = ({ feed, setFeeds }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const updateFeed = async () => {
