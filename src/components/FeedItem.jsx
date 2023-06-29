@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from 'styled-components';
-import Modal from '../shared/Detail';
+import Modal from '../shared/detail';
 
 
 
-
-const FeedItem = ({ feeds, feed, setFeeds }) => {
+const FeedItem = ({ feed, setFeeds }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const updateFeed = async () => {
@@ -40,14 +39,14 @@ const FeedItem = ({ feeds, feed, setFeeds }) => {
 
   const openModal = () => {
     if (!isModalOpen) {
-    setIsModalOpen(true);
-  }
-};
+      setIsModalOpen(true);
+    }
+  };
 
-
-   const closeModal = () => {
+  const closeModal = () => {
     if (isModalOpen) {
-    setIsModalOpen(false);
+      setIsModalOpen(false);
+
     }
   };
 

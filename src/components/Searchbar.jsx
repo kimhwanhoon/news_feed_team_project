@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 
-function Searchbar() {
+function Searchbar({ feeds, setFilteredFeeds, onSearchChange }) {
   const [searchValue, setSearchValue] = useState('');
 
   const handleSearchChange = (e) => {
-    setSearchValue(e.target.value);
+    const value = e.target.value;
+    setSearchValue(value);
+    onSearchChange(value); // Call the onSearchChange prop with the updated search value
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // Perform search functionality here
-    console.log('Searching for:', searchValue);
+    const searchFeed = searchValue.toLowerCase().trim();
+
+    const filteredFeeds = feeds.filter((feed) => feed.text.toLowerCase().includes(searchFeed));
+
+    setFilteredFeeds(filteredFeeds);
+    setSearchValue('');
   };
 
   return (

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import css from 'styled-components';
-import HeartBtn from '../modal/Heart';
+import HeartBtn from 'components/modal/Heart';
 
 //---------style-component-------------------
 //-----모달창-----
@@ -77,19 +77,17 @@ export const ModalBackdrop = styled.div`
 `;
 
 
-
-
-
 export const Modal = ({ closeModal, text, isOpen }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
-  
   //좋아요 하트 버튼
   const handleLikeClick = (newLike) => {
     setIsLiked(newLike);
   };
 
- //배경 누르는 이벤트
+
+  //배경 누르는 이벤트
+
   const handleBackdropClick = () => {
     closeModal();
     setIsModalOpen(false);
@@ -97,29 +95,27 @@ export const Modal = ({ closeModal, text, isOpen }) => {
 
   return (
     <>
-    {isModalOpen && (
-      <>
-      <ModalContainer>
-      <ModalBackdrop onClick={handleBackdropClick} />
-          <DetailModal>
-            <DetailTitle>
-              <User src={'../assets/user (1).png'} />
-              nickname
-            </DetailTitle>
-            <DetailBox scrollable>{text}</DetailBox>
-            <ButtonContainer>
-              <HeartBtn initialLike={isLiked} onClick={handleLikeClick} />
-              <button onClick={handleBackdropClick}>닫기</button>
-            </ButtonContainer>
-            
-          </DetailModal>
-          
-        </ModalContainer>
-        
+      {isModalOpen && (
+        <>
+          <ModalContainer>
+            <ModalBackdrop onClick={handleBackdropClick} />
+            <DetailModal>
+              <DetailTitle>
+                <User src={'../assets/user (1).png'} />
+                nickname
+              </DetailTitle>
+              <DetailBox scrollable>{text}</DetailBox>
+              <ButtonContainer>
+                <HeartBtn initialLike={isLiked} onClick={handleLikeClick} />
+                <button onClick={handleBackdropClick}>닫기</button>
+              </ButtonContainer>
+            </DetailModal>
+          </ModalContainer>
+        </>
+      )}
     </>
-  )}
-</>
-);
+  );
+
 };
 
 export default Modal;
