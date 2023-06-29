@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from 'styled-components';
-import Modal from './detail/Detail';
+import Modal from '../shared/Detail';
+
+
+
 
 const FeedItem = ({ feed, setFeeds }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,11 +39,16 @@ const FeedItem = ({ feed, setFeeds }) => {
   };
 
   const openModal = () => {
+    if (!isModalOpen) {
     setIsModalOpen(true);
-  };
+  }
+};
 
-  const closeModal = () => {
+
+   const closeModal = () => {
+    if (isModalOpen) {
     setIsModalOpen(false);
+    }
   };
 
   return (

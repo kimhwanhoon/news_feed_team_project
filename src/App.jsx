@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import Feed from './components/Feed';
-import Detail from './components/detail/Detail';
 import Searchbar from './components/Searchbar';
+import Detail from './shared/Detail';
 
 const App = () => {
   const [feeds, setFeeds] = useState([]);

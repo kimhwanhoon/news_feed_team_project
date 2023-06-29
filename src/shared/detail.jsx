@@ -1,11 +1,11 @@
-//게시글 클릭시 모달창
+//-----------------게시글 클릭시 나오는 모달창--------------------
 import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
-import userImg from '../../assets/user (1).png';
 import css from 'styled-components';
-import HeartBtn from './Heart';
+import HeartBtn from '../modal/Heart';
 
-//modal을 구현하는데 전체적으로 필요한 css
+//---------style-component-------------------
+//-----모달창-----
 export const ModalContainer = styled.div`
   position: fixed;
   top: 0;
@@ -32,23 +32,21 @@ export const DetailModal = styled.div`
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 1fr;
 `;
+//모달창 상단의 작성자 정보:DetailTitle
+export const User = styled.img`
+  width: 40px;
+  height: 40px;
+`;
+export const DetailTitle = styled.p`
+  font-size: 20px;
+  padding-left: 20px;
+`;
 export const ButtonContainer = styled.div`
   display: flex;
   gap: 10px;
   justify-content: flex-end;
 `;
 export const CloseBtn = styled.button``;
-
-//Modal이 떴을 때의 배경을 깔아주는 css
-export const ModalBackdrop = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: transparent;
-  z-index: 9998;
-`;
 
 export const DetailBox = styled.div`
   border: 1px solid lightgray;
@@ -67,61 +65,61 @@ export const DetailBox = styled.div`
     `}
 `;
 
-//모달창 상단의 작성자 정보:DetailTitle
-export const User = styled.img`
-  width: 40px;
-  height: 40px;
+//Modal 뒤 배경
+export const ModalBackdrop = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  z-index: 1;
 `;
-export const DetailTitle = styled.p`
-  font-size: 20px;
-  padding-left: 20px;
-`;
-//ModalBtn(상세보기) , ExitBtn(이전으로)/ 배경 누르면 이전으로
-// export const UserImg = () => {
-//   return (
-//     <>
-//       <User src={userImg} />
-//     </>
-//   );
-// };
+
+
+
+
 
 export const Modal = ({ closeModal, text, isOpen }) => {
   const [isLiked, setIsLiked] = useState(false);
-
-  const handleLikeClick = () => {
-    setIsLiked(!isLiked);
+  const [isModalOpen, setIsModalOpen] = useState(isOpen);
+  
+  //좋아요 하트 버튼
+  const handleLikeClick = (newLike) => {
+    setIsLiked(newLike);
   };
 
-  // useEffect(() => {
-  //   setIsOpen(true);
-  // }, []);
-
-  const closeAndResetModal = () => {
-    // setIsOpen(false);
-    setIsLiked(false);
+ //배경 누르는 이벤트
+  const handleBackdropClick = () => {
     closeModal();
+    setIsModalOpen(false);
   };
 
   return (
     <>
-      {isOpen && (
-        <ModalContainer>
+    {isModalOpen && (
+      <>
+      <ModalContainer>
+      <ModalBackdrop onClick={handleBackdropClick} />
           <DetailModal>
             <DetailTitle>
-              <User src={require('../../assets/user (1).png').default} />
+              <User src={'../assets/user (1).png'} />
               nickname
             </DetailTitle>
             <DetailBox scrollable>{text}</DetailBox>
             <ButtonContainer>
-              <HeartBtn like={isLiked} onClick={handleLikeClick} />
-              <button onClick={closeAndResetModal}>닫기</button>
+              <HeartBtn initialLike={isLiked} onClick={handleLikeClick} />
+              <button onClick={handleBackdropClick}>닫기</button>
             </ButtonContainer>
+            
           </DetailModal>
-          <ModalBackdrop onClick={closeAndResetModal} />
+          
         </ModalContainer>
-      )}
+        
     </>
-  );
+  )}
+</>
+);
 };
 
 export default Modal;
