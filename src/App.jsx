@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import Feed from './components/Feed';
 import Searchbar from './components/Searchbar';
+
 import Detail from './shared/detail';
 
 const App = () => {

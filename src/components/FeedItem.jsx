@@ -4,6 +4,8 @@ import { db } from '../firebase';
 import styled from 'styled-components';
 import Modal from '../shared/detail';
 
+
+
 const FeedItem = ({ feed, setFeeds }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -44,6 +46,7 @@ const FeedItem = ({ feed, setFeeds }) => {
   const closeModal = () => {
     if (isModalOpen) {
       setIsModalOpen(false);
+
     }
   };
 

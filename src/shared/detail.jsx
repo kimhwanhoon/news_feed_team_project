@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { styled } from 'styled-components';
 import css from 'styled-components';
 import HeartBtn from 'components/modal/Heart';
+
 //---------style-component-------------------
 //-----모달창-----
 export const ModalContainer = styled.div`
@@ -75,16 +76,18 @@ export const ModalBackdrop = styled.div`
   z-index: 1;
 `;
 
+
 export const Modal = ({ closeModal, text, isOpen }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
-
   //좋아요 하트 버튼
   const handleLikeClick = (newLike) => {
     setIsLiked(newLike);
   };
 
+
   //배경 누르는 이벤트
+
   const handleBackdropClick = () => {
     closeModal();
     setIsModalOpen(false);
@@ -112,6 +115,7 @@ export const Modal = ({ closeModal, text, isOpen }) => {
       )}
     </>
   );
+
 };
 
 export default Modal;
