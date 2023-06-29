@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import FeedItem from './FeedItem';
-import { addDoc, collection, getDocs, query } from 'firebase/firestore';
+import { addDoc, collection, getDocs, query, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from 'styled-components';
+import FeedItem from './FeedItem';
 
-const Feed = ({ feeds, setFeeds, searchValue }) => {
+const Feed = ({ searchValue }) => {
   const [text, setText] = useState('');
+  const [feeds, setFeeds] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +23,15 @@ const Feed = ({ feeds, setFeeds, searchValue }) => {
     };
 
     fetchData();
+
+    // Subscribe to real-time updates for the feeds collection
+    const unsubscribe = onSnapshot(collection(db, 'feeds'), (snapshot) => {
+      const updatedFeeds = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setFeeds(updatedFeeds);
+    });
+
+    // Cleanup the listener when the component unmounts
+    return () => unsubscribe();
   }, []);
 
   const onChange = (event) => {
@@ -36,10 +46,8 @@ const Feed = ({ feeds, setFeeds, searchValue }) => {
     const newFeed = { text: text };
 
     const collectionRef = collection(db, 'feeds');
-    const docRef = await addDoc(collectionRef, newFeed);
-    const id = docRef.id;
+    await addDoc(collectionRef, newFeed);
 
-    setFeeds((prev) => [...prev, { ...newFeed, id }]);
     setText('');
   };
 
@@ -58,13 +66,6 @@ const Feed = ({ feeds, setFeeds, searchValue }) => {
         </div>
       </form>
 
-      <div>
-        {feeds
-          .filter((feed) => !feed.isDone)
-          .map((feed) => (
-            <FeedItem key={feed.id} feeds={feeds} feed={feed} setFeeds={setFeeds} />
-          ))}
-      </div>
       <div>
         {filteredFeeds.map((feed) => (
           <FeedItem key={feed.id} feed={feed} setFeeds={setFeeds} />

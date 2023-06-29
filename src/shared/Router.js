@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from 'pages/Home';
-import Detail from 'components/detail/Detail';
+import Detail from 'shared/Detail';
 
 const Router = () => {
   return (

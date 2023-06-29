@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import Feed from './components/Feed';
-import Detail from './components/detail/Detail';
 import Searchbar from './components/Searchbar';
+import Detail from './shared/detail';
 
 const App = () => {
   const [feeds, setFeeds] = useState([]);
@@ -12,7 +12,7 @@ const App = () => {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      console.log('user', user); // Handle user authentication state changes
+      console.log('user', user); // 사용자 인증 정보가 변경될 때마다 해당 이벤트를 받아 처리합니다.
     });
   }, []);
 
