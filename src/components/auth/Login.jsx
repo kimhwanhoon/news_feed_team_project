@@ -1,8 +1,12 @@
-import { loginOnClickHandler } from 'components/Header';
 import { loginWithEmailPassword, loginWithGithub, loginWithGoogle } from 'firebaseConfig/firebaseAuth';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ForgotPassword, { toggleForgotPasswordModal } from './ForgotPassword';
+import ForgotPassword from './ForgotPassword';
+import {
+  handleToggleForgotPasswordModal,
+  handleToggleLoginModal,
+  handleToggleSignupModal
+} from 'redux/modules/loginModalToggler';
 
 const inputOnChangeHandler = (e, setFn) => {
   setFn(e.target.value);
@@ -11,6 +15,10 @@ const inputOnChangeHandler = (e, setFn) => {
 function LoginModal() {
   //
   const dispatch = useDispatch();
+  // Redux에서 loginModalToggler 사용
+  const modalClassName = useSelector((state) => {
+    return state.loginModalToggler.LOGIN_MODAL;
+  });
   //
   const isLoginSuccess = useSelector((state) => {
     return state.isLoginSuccess.loginSuccess;
@@ -26,9 +34,14 @@ function LoginModal() {
 
   return (
     <>
-      <section id="login-modal" className="modal-container hidden">
+      <section id="login-modal" className={modalClassName}>
         <div className="modal">
-          <button onClick={loginOnClickHandler} className="close-button">
+          <button
+            className="close-button"
+            onClick={() => {
+              handleToggleLoginModal(dispatch);
+            }}
+          >
             &times;
           </button>
           <div className="modal-h-container">
@@ -52,7 +65,7 @@ function LoginModal() {
               onChange={(e) => inputOnChangeHandler(e, setPasswordValue)}
               placeholder="Password"
             />
-            <span id="forgot-password" onClick={toggleForgotPasswordModal}>
+            <span id="forgot-password" onClick={() => handleToggleForgotPasswordModal(dispatch)}>
               Forgot password?
             </span>
             <input
@@ -69,11 +82,11 @@ function LoginModal() {
             <div></div>
           </div>
           <div className="modal-social-icon-container">
-            <button onClick={() => loginWithGoogle(dispatch)}>
+            <button onClick={(e) => loginWithGoogle(dispatch, e)}>
               <img src="img/Google.png" alt="Google icon" />
               Google
             </button>
-            <button onClick={() => loginWithGithub(dispatch)}>
+            <button onClick={(e) => loginWithGithub(dispatch, e)}>
               <img src="img/github.png" alt="github icon" />
               Github
             </button>
@@ -81,7 +94,13 @@ function LoginModal() {
           <div className="modal-last-suggestion-container">
             <h3 id="modal-last-text">
               Don't you have an account?{' '}
-              <span id="modal-sign-up-suggestion" onClick={signupOnClickHandler}>
+              <span
+                id="modal-sign-up-suggestion"
+                onClick={() => {
+                  handleToggleLoginModal(dispatch);
+                  handleToggleSignupModal(dispatch);
+                }}
+              >
                 Sign Up
               </span>
             </h3>
@@ -94,8 +113,3 @@ function LoginModal() {
 }
 
 export default LoginModal;
-
-const signupOnClickHandler = () => {
-  document.getElementById('login-modal').classList.toggle('hidden');
-  document.getElementById('signup-modal').classList.toggle('hidden');
-};

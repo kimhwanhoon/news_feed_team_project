@@ -5,18 +5,30 @@ import SignUpModal from './auth/SignUp';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut, loggedInUserCheck } from 'firebaseConfig/firebaseAuth';
 import { fetchUserDate } from 'redux/modules/user';
+import { handleToggleLoginModal } from 'redux/modules/loginModalToggler';
+import { handleToggleLoginButton, handleToggleLogoutButton } from 'redux/modules/loginLogoutToggle';
 
 function Header() {
   const dispatch = useDispatch();
+  //
+  // Redux에서 loginAndLogoutButtonToggler 사용
+  const loginButtonClassName = useSelector((state) => {
+    return state.loginAndLogoutButtonToggler.LOGIN;
+  });
+  const logoutButtonClassName = useSelector((state) => {
+    return state.loginAndLogoutButtonToggler.LOGOUT;
+  });
   // 유저가 로그인 되어있는지 확인하여 새로고침해도 로그아웃이 되지 않게 설정
   useEffect(() => {
     loggedInUserCheck()
       .then((userData) => {
         if (!userData) {
+          handleToggleLogoutButton(dispatch);
           return;
         } else {
-          login$outToggle();
           dispatch(fetchUserDate(userData));
+          // 로그인이 되어있다면 로그인 버튼을 없애고 로그아웃버튼을 보이기
+          handleToggleLoginButton(dispatch);
         }
       })
       .catch((error) => {
@@ -32,15 +44,26 @@ function Header() {
   return (
     <>
       <StyledHeader>
-        <h1>Logo</h1>
+        <div id="header-left-div">
+          <h1>{'React =>'}</h1>
+          <Nav />
+        </div>
         <div id="header-right-div">
           <div id="header-button-div">
-            <button id="header-login-button" onClick={loginOnClickHandler}>
-              log in
-            </button>
-            <button id="header-logout-button" className="hidden" onClick={() => logOut(dispatch)}>
-              log out
-            </button>
+            <img
+              id="header-login-button"
+              onClick={() => handleToggleLoginModal(dispatch)}
+              className={loginButtonClassName}
+              src="img/login.png"
+              alt="login"
+            />
+            <img
+              id="header-logout-button"
+              onClick={() => logOut(dispatch)}
+              className={logoutButtonClassName}
+              src="img/logout.png"
+              alt="logout"
+            />
           </div>
           <div id="header-profile-div">
             <img
@@ -57,25 +80,28 @@ function Header() {
                 'img/profile.png'
               }
             />
-            <p id="header-profile-signin">
-              {
-                // subscribedUserData.~ : loggedInUserCheck()에서 가져온 userData
-                // subscribedUserData.user: Google
-                // subscribedUserData.profile: Github
-                // 맨 처음 로드시 아무런 정보가 없기 때문에 옵셔널 체이닝(?.)을 사용하여 에러를 예방
-                subscribedUserData?.displayName ??
-                  subscribedUserData?.email ??
-                  subscribedUserData?.user?.displayName ??
-                  subscribedUserData?.profile?.name ??
-                  subscribedUserData?.profile?.email ??
-                  subscribedUserData?.user?.email ??
-                  'Not signed in'
-              }
-            </p>
+            <div id="header-profile-username-container">
+              <p id="header-profile-username-p">
+                {
+                  // subscribedUserData.~ : loggedInUserCheck()에서 가져온 userData
+                  // subscribedUserData.user: Google
+                  // subscribedUserData.profile: Github
+                  // 맨 처음 로드시 아무런 정보가 없기 때문에 옵셔널 체이닝(?.)을 사용하여 에러를 예방
+                  subscribedUserData?.displayName ??
+                    subscribedUserData?.email ??
+                    subscribedUserData?.user?.displayName ??
+                    subscribedUserData?.profile?.name ??
+                    subscribedUserData?.profile?.email ??
+                    subscribedUserData?.user?.email ??
+                    'Not signed in'
+                }
+              </p>
+              <img id="header-profile-more-button" src="img/arrow_down.png" alt="" />
+            </div>
           </div>
         </div>
+        <UserOptions />
       </StyledHeader>
-
       <LoginModal />
       <SignUpModal />
     </>
@@ -83,41 +109,51 @@ function Header() {
 }
 
 export default Header;
-export const loginOnClickHandler = (e) => {
-  if (!document.getElementById('login-modal').classList.contains('hidden') && e.target.id === 'header-login-button') {
-    return;
-  }
-  document.getElementById('login-modal').classList.toggle('hidden');
-};
-export const signupOnClickHandler = () => {
-  document.getElementById('signup-modal').classList.toggle('hidden');
+
+const UserOptions = () => {
+  return (
+    <div id="header-user-info-options-container">
+      <div className="header-user-info-option">유저 정보</div>
+      <div className="header-user-info-option">로그아웃</div>
+    </div>
+  );
 };
 
-export const login$outToggle = () => {
-  document.getElementById('header-login-button').classList.toggle('hidden');
-  document.getElementById('header-logout-button').classList.toggle('hidden');
+const Nav = () => {
+  return (
+    <nav>
+      <a id="nav-home" href="/">
+        Home
+      </a>
+      <a id="nav-write" href="/">
+        Write
+      </a>
+      <a id="nav-profile" href="/profile-page">
+        Profile
+      </a>
+    </nav>
+  );
 };
 
 const StyledHeader = styled.header`
-  height: 100px;
-  border-bottom: 1px black solid;
+  height: 80px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: lavenderblush;
+  background-color: white;
+  box-shadow: 0 2px 4px 0 #999;
   #header-right-div {
     display: flex;
     gap: 1rem;
   }
   #header-profile-div {
     display: flex;
-    gap: 0.25rem;
-    flex-direction: column;
+    gap: 1rem;
     align-items: center;
     margin-right: 2rem;
   }
   #profile-image {
-    width: 50px;
+    width: 40px;
     border-radius: 100%;
     margin-bottom: 0.25rem;
   }
@@ -125,20 +161,84 @@ const StyledHeader = styled.header`
     margin-left: 2rem;
     font-size: 2rem;
     font-weight: 600;
+    color: #5196fe;
   }
   #header-button-div {
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
-  #header-button-div button {
-    background-color: whitesmoke;
-    border: none;
-    box-shadow: 0 0 5px 0px #999;
-    border-radius: 8px;
-    padding: 0.3rem 0.75rem;
-    font-weight: 600;
-    color: #333;
+  #header-button-div img {
+    box-shadow: 0 0 3px 0px #ddd;
+    border-radius: 100%;
     cursor: pointer;
+    transition: cubic-bezier(0, 0, 0.2, 1) 0.3s;
+    width: 40px;
+    margin-right: 1rem;
+    background-color: #f0f0f0;
+    padding: 7px;
+  }
+  #header-button-div img:hover {
+    transform: scale(1.05);
+  }
+
+  #header-profile-username-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    opacity: 0.7;
+  }
+  #header-profile-username-container:hover {
+    opacity: 1;
+    transition: 0.3s ease-in-out;
+  }
+  #header-profile-more-button {
+    width: 16px;
+  }
+
+  #header-left-div {
+    display: flex;
+    gap: 5rem;
+    align-items: center;
+  }
+  nav {
+    display: flex;
+    gap: 2.5rem;
+  }
+  nav a {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #aaa;
+    letter-spacing: 0.25px;
+    text-shadow: 0.25px 0.25px 2px #ddd;
+    transition: cubic-bezier(0, 0, 0.2, 1) 0.25s;
+  }
+  #nav-home {
+    color: #5196fe;
+  }
+  nav a:hover {
+    color: #222;
+    transition: cubic-bezier(0, 0, 0.2, 1) 0.25s;
+  }
+
+  #header-user-info-options-container {
+    position: absolute;
+    right: 2rem;
+    top: 60px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px 1px #777;
+    border: 1px solid transparent;
+  }
+  .header-user-info-option {
+    padding: 0.75rem 1.25rem;
+    background-color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: cubic-bezier(0, 0, 0.2, 1) 0.3s;
+  }
+  .header-user-info-option:hover {
+    background-color: #5196fe;
+    color: white;
   }
 `;

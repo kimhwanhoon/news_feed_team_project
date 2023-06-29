@@ -1,18 +1,24 @@
-import { signupOnClickHandler } from 'components/Header';
 import { loginWithGithub, loginWithGoogle, signingUp } from 'firebaseConfig/firebaseAuth';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { handleToggleLoginModal, handleToggleSignupModal } from 'redux/modules/loginModalToggler';
 const inputOnChangeHandler = (e, setFn) => {
   setFn(e.target.value);
 };
 
 function SignUpModal() {
   const dispatch = useDispatch();
+  // Redux에서 loginModalToggler 사용
+  const modalClassName = useSelector((state) => {
+    return state.loginModalToggler.SIGNUP_MODAL;
+  });
 
   const isLoginSuccess = useSelector((state) => {
     return state.isLoginSuccess.loginSuccess;
   });
-
+  const [emailValue, setEmailValue] = useState('');
+  const [passwordValue, setPasswordValue] = useState('');
+  const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
   useEffect(() => {
     if (isLoginSuccess) {
       setEmailValue('');
@@ -21,13 +27,15 @@ function SignUpModal() {
     }
   }, [isLoginSuccess]);
 
-  const [emailValue, setEmailValue] = useState('');
-  const [passwordValue, setPasswordValue] = useState('');
-  const [confirmPasswordValue, setConfirmPasswordValue] = useState('');
   return (
-    <section id="signup-modal" className="modal-container hidden">
+    <section id="signup-modal" className={modalClassName}>
       <div className="modal">
-        <button onClick={signupOnClickHandler} className="close-button">
+        <button
+          className="close-button"
+          onClick={() => {
+            handleToggleSignupModal(dispatch);
+          }}
+        >
           &times;
         </button>
         <div className="modal-h-container">
@@ -72,11 +80,11 @@ function SignUpModal() {
           <div></div>
         </div>
         <div className="modal-social-icon-container">
-          <button onClick={() => loginWithGoogle(dispatch)}>
+          <button onClick={(e) => loginWithGoogle(dispatch, e)}>
             <img src="img/Google.png" alt="Google icon" />
             Google
           </button>
-          <button onClick={() => loginWithGithub(dispatch)}>
+          <button onClick={(e) => loginWithGithub(dispatch, e)}>
             <img src="img/github.png" alt="github icon" />
             Github
           </button>
@@ -84,7 +92,13 @@ function SignUpModal() {
         <div className="modal-last-suggestion-container">
           <h3 id="modal-last-text">
             You already have account?{' '}
-            <span onClick={signinOnClickHandler} id="modal-sign-up-suggestion">
+            <span
+              id="modal-sign-up-suggestion"
+              onClick={() => {
+                handleToggleLoginModal(dispatch);
+                handleToggleSignupModal(dispatch);
+              }}
+            >
               Sign In
             </span>
           </h3>
@@ -95,10 +109,3 @@ function SignUpModal() {
 }
 
 export default SignUpModal;
-
-const signinOnClickHandler = () => {
-  //document.getElementById('login-modal').classList.toggle('show');
-  document.getElementById('login-modal').classList.toggle('hidden');
-  //document.getElementById('signup-modal').classList.toggle('show');
-  document.getElementById('signup-modal').classList.toggle('hidden');
-};

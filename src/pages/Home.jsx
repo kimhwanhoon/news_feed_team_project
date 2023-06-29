@@ -6,7 +6,7 @@ function Home() {
   return (
     <StyledHome>
       <Header />
-      <div></div>
+      <div id="home-input-container"></div>
       <div></div>
     </StyledHome>
   );
@@ -16,5 +16,5 @@ export default Home;
 
 const StyledHome = styled.div`
   height: 100vh;
-  background-color: #999;
+  background-color: white;
 `;

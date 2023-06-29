@@ -1,6 +1,7 @@
 import { sendResetPasswordMail } from 'firebaseConfig/firebaseAuth';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { handleToggleForgotPasswordModal } from 'redux/modules/loginModalToggler';
 
 function ForgotPassword() {
   const isPasswordResetMailSent = useSelector((state) => {
@@ -13,11 +14,14 @@ function ForgotPassword() {
       setEmailAddress('');
     }
   }, [isPasswordResetMailSent]);
-
+  // Redux에서 loginModalToggler 사용
+  const modalClassName = useSelector((state) => {
+    return state.loginModalToggler.FORGOT_PASSWORD_MODAL;
+  });
   return (
-    <section id="forgot-password-modal" className="modal-container small hidden">
+    <section id="forgot-password-modal" className={modalClassName}>
       <div className="modal">
-        <button onClick={toggleForgotPasswordModal} className="close-button">
+        <button className="close-button" onClick={() => handleToggleForgotPasswordModal(dispatch)}>
           &times;
         </button>
         <div className="modal-h-container">
@@ -46,7 +50,4 @@ function ForgotPassword() {
   );
 }
 
-export const toggleForgotPasswordModal = () => {
-  document.getElementById('forgot-password-modal').classList.toggle('hidden');
-};
 export default ForgotPassword;
