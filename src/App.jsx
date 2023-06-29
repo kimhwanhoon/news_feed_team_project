@@ -5,7 +5,7 @@ import { auth } from './firebase';
 // import Auth from './components/Auth';
 import Feed from './components/Feed';
 import Searchbar from './components/Searchbar';
-import Detail from './shared/Detail';
+import Detail from './shared/detail';
 
 const App = () => {
   useEffect(() => {

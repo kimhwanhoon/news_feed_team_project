@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from 'styled-components';
-import Modal from '../shared/Detail';
+import Modal from '../shared/detail';
 
 
 
