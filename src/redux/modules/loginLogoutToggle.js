@@ -13,8 +13,8 @@ export const toggleLogoutButtonClassName = () => ({
 
 // 리듀서
 const initialState = {
-  LOGIN: '',
-  LOGOUT: ''
+  LOGIN: 'hidden',
+  LOGOUT: 'hidden'
 };
 
 const loginAndLogoutButtonToggler = (state = initialState, action) => {

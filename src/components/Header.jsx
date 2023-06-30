@@ -7,10 +7,11 @@ import { logOut, loggedInUserCheck } from 'firebaseConfig/firebaseAuth';
 import { fetchUserDate } from 'redux/modules/user';
 import { handleToggleLoginModal } from 'redux/modules/loginModalToggler';
 import { handleToggleLoginButton, handleToggleLogoutButton } from 'redux/modules/loginLogoutToggle';
+import { handleToggleHeaderMenuButton } from 'redux/modules/headerMenuToggle';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
   const dispatch = useDispatch();
-  //
   // Redux에서 loginAndLogoutButtonToggler 사용
   const loginButtonClassName = useSelector((state) => {
     return state.loginAndLogoutButtonToggler.LOGIN;
@@ -18,17 +19,18 @@ function Header() {
   const logoutButtonClassName = useSelector((state) => {
     return state.loginAndLogoutButtonToggler.LOGOUT;
   });
-  // 유저가 로그인 되어있는지 확인하여 새로고침해도 로그아웃이 되지 않게 설정
+  //유저가 로그인 되어있는지 확인하여 새로고침해도 로그아웃이 되지 않게 설정
   useEffect(() => {
     loggedInUserCheck()
       .then((userData) => {
         if (!userData) {
-          handleToggleLogoutButton(dispatch);
+          handleToggleLoginButton(dispatch);
           return;
         } else {
           dispatch(fetchUserDate(userData));
           // 로그인이 되어있다면 로그인 버튼을 없애고 로그아웃버튼을 보이기
-          handleToggleLoginButton(dispatch);
+
+          handleToggleLogoutButton(dispatch);
         }
       })
       .catch((error) => {
@@ -41,6 +43,7 @@ function Header() {
   const subscribedUserData = useSelector((state) => {
     return state.userData;
   });
+
   return (
     <>
       <StyledHeader>
@@ -79,8 +82,9 @@ function Header() {
                 subscribedUserData?.profile?.avatar_url ??
                 'img/profile.png'
               }
+              onClick={() => handleToggleHeaderMenuButton(dispatch)}
             />
-            <div id="header-profile-username-container">
+            <div id="header-profile-username-container" onClick={() => handleToggleHeaderMenuButton(dispatch)}>
               <p id="header-profile-username-p">
                 {
                   // subscribedUserData.~ : loggedInUserCheck()에서 가져온 userData
@@ -96,7 +100,7 @@ function Header() {
                     'Not signed in'
                 }
               </p>
-              <img id="header-profile-more-button" src="img/arrow_down.png" alt="" />
+              <img id="header-profile-more-button" src="img/arrow_down.png" alt="header menu" />
             </div>
           </div>
         </div>
@@ -111,10 +115,32 @@ function Header() {
 export default Header;
 
 const UserOptions = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  // Redux에서 loginAndLogoutButtonToggler 사용
+  const headerMenuButtonClassName = useSelector((state) => {
+    return state.HeaderMenuButtonToggler.HeaderMenuToggle;
+  });
   return (
-    <div id="header-user-info-options-container">
-      <div className="header-user-info-option">유저 정보</div>
-      <div className="header-user-info-option">로그아웃</div>
+    <div id="header-user-info-options-container" className={headerMenuButtonClassName}>
+      <div
+        className="header-user-info-option"
+        onClick={() => {
+          handleToggleHeaderMenuButton(dispatch);
+          navigate('/profile-page');
+        }}
+      >
+        유저 정보
+      </div>
+      <div
+        className="header-user-info-option"
+        onClick={() => {
+          handleToggleHeaderMenuButton(dispatch);
+          logOut(dispatch);
+        }}
+      >
+        로그아웃
+      </div>
     </div>
   );
 };
@@ -156,6 +182,7 @@ const StyledHeader = styled.header`
     width: 40px;
     border-radius: 100%;
     margin-bottom: 0.25rem;
+    cursor: pointer;
   }
   h1 {
     margin-left: 2rem;
@@ -229,6 +256,7 @@ const StyledHeader = styled.header`
     border-radius: 10px;
     box-shadow: 1px 1px 3px 1px #777;
     border: 1px solid transparent;
+    background-color: #fff;
   }
   .header-user-info-option {
     padding: 0.75rem 1.25rem;

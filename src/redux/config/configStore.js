@@ -1,6 +1,7 @@
 import { createStore } from 'redux';
 import { combineReducers } from 'redux';
 import isResetMailSent from 'redux/modules/forgotMailSent';
+import HeaderMenuButtonToggler from 'redux/modules/headerMenuToggle';
 import isLoginSuccess from 'redux/modules/isLoginSuccess';
 import loginAndLogoutButtonToggler from 'redux/modules/loginLogoutToggle';
 import loginModalToggler from 'redux/modules/loginModalToggler';
@@ -11,7 +12,8 @@ const rootReducer = combineReducers({
   isLoginSuccess,
   isResetMailSent,
   loginModalToggler,
-  loginAndLogoutButtonToggler
+  loginAndLogoutButtonToggler,
+  HeaderMenuButtonToggler
 });
 const store = createStore(rootReducer);
 
