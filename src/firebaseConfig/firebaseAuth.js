@@ -9,11 +9,12 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signOut
+  signOut,
+  updateProfile
 } from 'firebase/auth';
 import { sentMailSucess } from 'redux/modules/forgotMailSent';
 import { loginSucess, logoutSucess } from 'redux/modules/isLoginSuccess';
-import { handleToggleLoginButton, handleToggleLogoutButton } from 'redux/modules/loginLogoutToggle';
+
 import {
   handleToggleForgotPasswordModal,
   handleToggleLoginModal,
@@ -25,6 +26,9 @@ import {
   saveUserDataWithSocial,
   signupUserDataUpdate
 } from 'redux/modules/user';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { useEffect, useState } from 'react';
+import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 
 const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG);
 
@@ -32,6 +36,10 @@ const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG);
 const app = initializeApp(firebaseConfig);
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
+// Create a root reference
+const storage = getStorage();
+// Initialize Cloud Firestore and get a reference to the service
+const db = getFirestore(app);
 
 // email과 password로 로그인
 export const loginWithEmailPassword = async (email, password, dispatch) => {
@@ -42,9 +50,7 @@ export const loginWithEmailPassword = async (email, password, dispatch) => {
     dispatch(loginSucess());
     // 로그인 성공 후 모달 닫기
     handleToggleLoginModal(dispatch);
-    // 로그인 성공 후 로그인 버튼을 없애고, 로그아웃 버튼을 보이기
-    handleToggleLoginButton(dispatch);
-    handleToggleLogoutButton(dispatch);
+
     // 유저의 닉네임이 없으면 이메일로 환영 인사 내보내기
     alert(`Welcome, ${userCredential.user.displayName ?? userCredential.user.email}!`);
     // 에러 핸들링
@@ -77,9 +83,6 @@ export const loginWithGoogle = (dispatch, e) => {
       } else {
         handleToggleSignupModal(dispatch);
       }
-      // 로그인 성공 후 로그인 버튼을 없애고, 로그아웃 버튼을 보이기
-      handleToggleLoginButton(dispatch);
-      handleToggleLogoutButton(dispatch);
     })
     .catch((error) => {
       const credential = GoogleAuthProvider.credentialFromError(error);
@@ -109,9 +112,6 @@ export const loginWithGithub = (dispatch, e) => {
       } else {
         handleToggleSignupModal(dispatch);
       }
-      // 로그인 성공 후 로그인 버튼을 없애고, 로그아웃 버튼을 보이기
-      handleToggleLoginButton(dispatch);
-      handleToggleLogoutButton(dispatch);
     })
     .catch((error) => {
       const credential = GithubAuthProvider.credentialFromError(error);
@@ -131,9 +131,7 @@ export const logOut = (dispatch) => {
     .then(() => {
       dispatch(deleteUserDataBySignout());
       dispatch(logoutSucess());
-      // 로그아웃 후 로그인 버튼을 없애고, 로그아웃 버튼을 보이기
-      handleToggleLoginButton(dispatch);
-      handleToggleLogoutButton(dispatch);
+
       alert('안전하게 로그아웃되었습니다.');
     })
     .catch((error) => {
@@ -232,4 +230,75 @@ export const sendResetPasswordMail = (email, dispatch) => {
       const errorDetail = [error.code, error.message];
       console.log(errorDetail);
     });
+};
+
+// 유저 정보 업데이트
+
+export const userInfoUpdate = async (
+  displayNameValue,
+  firstNameValue,
+  lastNameValue,
+  addressValue,
+  zipcodeValue,
+  cityValue
+) => {
+  updateProfile(auth.currentUser, {
+    displayName: displayNameValue
+  })
+    .then(() => {
+      alert('Profile updated!');
+    })
+    .catch((error) => {
+      console.log('error', error);
+    });
+
+  const otherInfo = {
+    firstName: firstNameValue,
+    lastName: lastNameValue,
+    address: addressValue,
+    zipCode: zipcodeValue,
+    city: cityValue
+  };
+  console.log(otherInfo);
+  const infoRef = doc(db, 'profile', auth.currentUser.uid);
+  await setDoc(infoRef, otherInfo, { merge: true });
+};
+
+// Custom Hook
+export const useAuth = () => {
+  const [currentUser, setCurrentUser] = useState();
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => setCurrentUser(user));
+    return unsub;
+  }, []);
+
+  return currentUser;
+};
+
+// Storage
+export const uploadPhoto = async (file, currentUser, setLoading) => {
+  const fileRef = ref(storage, `profile/${currentUser.uid}.image}`);
+  setLoading(true);
+  const snapshot = await uploadBytes(fileRef, file);
+
+  const photoURL = await getDownloadURL(fileRef);
+
+  updateProfile(currentUser, { photoURL });
+  setLoading(false);
+  alert('Uploaded file!');
+};
+
+// fetch user detail
+export const fetchUserPageInfo = async (currentUser, setCombinedUserData) => {
+  const uid = currentUser.uid;
+  const userInfoRef = doc(db, 'profile', uid);
+  const docSnap = await getDoc(userInfoRef);
+
+  if (docSnap.exists()) {
+    console.log('doc data', docSnap.data());
+    setCombinedUserData(docSnap.data());
+  } else {
+    console.log('data not found!');
+  }
 };

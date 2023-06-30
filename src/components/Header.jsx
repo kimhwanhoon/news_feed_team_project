@@ -3,34 +3,29 @@ import { styled } from 'styled-components';
 import LoginModal from './auth/Login';
 import SignUpModal from './auth/SignUp';
 import { useDispatch, useSelector } from 'react-redux';
-import { logOut, loggedInUserCheck } from 'firebaseConfig/firebaseAuth';
+import { logOut, loggedInUserCheck, useAuth } from 'firebaseConfig/firebaseAuth';
 import { fetchUserDate } from 'redux/modules/user';
 import { handleToggleLoginModal } from 'redux/modules/loginModalToggler';
-import { handleToggleLoginButton, handleToggleLogoutButton } from 'redux/modules/loginLogoutToggle';
 import { handleToggleHeaderMenuButton } from 'redux/modules/headerMenuToggle';
 import { useNavigate } from 'react-router-dom';
 
 function Header() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  // Redux에서 loginAndLogoutButtonToggler 사용
-  const loginButtonClassName = useSelector((state) => {
-    return state.loginAndLogoutButtonToggler.LOGIN;
-  });
-  const logoutButtonClassName = useSelector((state) => {
-    return state.loginAndLogoutButtonToggler.LOGOUT;
-  });
+
   //유저가 로그인 되어있는지 확인하여 새로고침해도 로그아웃이 되지 않게 설정
+  const currentUser = useAuth();
   useEffect(() => {
     loggedInUserCheck()
       .then((userData) => {
         if (!userData) {
-          handleToggleLoginButton(dispatch);
+          // handleToggleLoginButton(dispatch);
           return;
         } else {
           dispatch(fetchUserDate(userData));
           // 로그인이 되어있다면 로그인 버튼을 없애고 로그아웃버튼을 보이기
 
-          handleToggleLogoutButton(dispatch);
+          // handleToggleLogoutButton(dispatch);
         }
       })
       .catch((error) => {
@@ -48,25 +43,29 @@ function Header() {
     <>
       <StyledHeader>
         <div id="header-left-div">
-          <h1>{'React =>'}</h1>
+          <h1 onClick={() => navigate('/')}>{'React =>'}</h1>
           <Nav />
         </div>
         <div id="header-right-div">
           <div id="header-button-div">
-            <img
-              id="header-login-button"
-              onClick={() => handleToggleLoginModal(dispatch)}
-              className={loginButtonClassName}
-              src="img/login.png"
-              alt="login"
-            />
-            <img
-              id="header-logout-button"
-              onClick={() => logOut(dispatch)}
-              className={logoutButtonClassName}
-              src="img/logout.png"
-              alt="logout"
-            />
+            {!currentUser && (
+              <img
+                id="header-login-button"
+                onClick={() => handleToggleLoginModal(dispatch)}
+                // className={loginButtonClassName}
+                src="img/login.png"
+                alt="login"
+              />
+            )}
+            {currentUser && (
+              <img
+                id="header-logout-button"
+                onClick={() => logOut(dispatch)}
+                // className={logoutButtonClassName}
+                src="img/logout.png"
+                alt="logout"
+              />
+            )}
           </div>
           <div id="header-profile-div">
             <img
@@ -80,7 +79,7 @@ function Header() {
                 subscribedUserData?.photoURL ??
                 subscribedUserData?.profile?.picture ??
                 subscribedUserData?.profile?.avatar_url ??
-                'img/profile.png'
+                'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
               }
               onClick={() => handleToggleHeaderMenuButton(dispatch)}
             />
@@ -115,6 +114,7 @@ function Header() {
 export default Header;
 
 const UserOptions = () => {
+  const currentUser = useAuth();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // Redux에서 loginAndLogoutButtonToggler 사용
@@ -123,24 +123,39 @@ const UserOptions = () => {
   });
   return (
     <div id="header-user-info-options-container" className={headerMenuButtonClassName}>
-      <div
-        className="header-user-info-option"
-        onClick={() => {
-          handleToggleHeaderMenuButton(dispatch);
-          navigate('/profile-page');
-        }}
-      >
-        유저 정보
-      </div>
-      <div
-        className="header-user-info-option"
-        onClick={() => {
-          handleToggleHeaderMenuButton(dispatch);
-          logOut(dispatch);
-        }}
-      >
-        로그아웃
-      </div>
+      {currentUser && (
+        <>
+          <div
+            className="header-user-info-option"
+            onClick={() => {
+              handleToggleHeaderMenuButton(dispatch);
+              navigate('/profile-page');
+            }}
+          >
+            유저 정보
+          </div>
+          <div
+            className="header-user-info-option"
+            onClick={() => {
+              handleToggleHeaderMenuButton(dispatch);
+              logOut(dispatch);
+            }}
+          >
+            로그아웃
+          </div>
+        </>
+      )}
+      {!currentUser && (
+        <div
+          className="header-user-info-option"
+          onClick={() => {
+            handleToggleHeaderMenuButton(dispatch);
+            handleToggleLoginModal(dispatch);
+          }}
+        >
+          로그인
+        </div>
+      )}
     </div>
   );
 };
@@ -180,6 +195,7 @@ const StyledHeader = styled.header`
   }
   #profile-image {
     width: 40px;
+    height: 40px;
     border-radius: 100%;
     margin-bottom: 0.25rem;
     cursor: pointer;
@@ -189,6 +205,7 @@ const StyledHeader = styled.header`
     font-size: 2rem;
     font-weight: 600;
     color: #5196fe;
+    cursor: pointer;
   }
   #header-button-div {
     display: flex;

@@ -1,10 +1,24 @@
 import Header from 'components/Header';
 import UserPageDetail from 'components/UserPage/UserPageDetail';
 import UserPageMenu from 'components/UserPage/UserPageMenu';
-import React from 'react';
+import { useAuth } from 'firebaseConfig/firebaseAuth';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 function ProfilePage() {
+  const currentUser = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    console.log(currentUser);
+    // 처음 로딩시에 currentUser가 로그인이 되어있음에도 undefined를 배출한다.
+    // 로그인이 안 되어있다면 currentUser는 null인것 같다.
+    if (!currentUser && currentUser !== undefined) {
+      alert('잘못된 접근입니다.\n로그인을 해주세요.');
+      navigate('/');
+    }
+  }, [navigate, currentUser]);
+
   return (
     <>
       <Header />

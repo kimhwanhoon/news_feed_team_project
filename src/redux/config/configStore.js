@@ -3,17 +3,17 @@ import { combineReducers } from 'redux';
 import isResetMailSent from 'redux/modules/forgotMailSent';
 import HeaderMenuButtonToggler from 'redux/modules/headerMenuToggle';
 import isLoginSuccess from 'redux/modules/isLoginSuccess';
-import loginAndLogoutButtonToggler from 'redux/modules/loginLogoutToggle';
 import loginModalToggler from 'redux/modules/loginModalToggler';
 import userData from 'redux/modules/user';
+import userPageInputToggler from 'redux/modules/userPageInputToggler';
 const rootReducer = combineReducers({
   // reducer 들을 여기에 적는다.
   userData,
   isLoginSuccess,
   isResetMailSent,
   loginModalToggler,
-  loginAndLogoutButtonToggler,
-  HeaderMenuButtonToggler
+  HeaderMenuButtonToggler,
+  userPageInputToggler
 });
 const store = createStore(rootReducer);
 
