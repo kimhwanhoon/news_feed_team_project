@@ -1,5 +1,5 @@
 //-----------------게시글 클릭시 나오는 모달창--------------------
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { styled } from 'styled-components';
 import css from 'styled-components';
 import HeartBtn from 'components/modal/Heart';
