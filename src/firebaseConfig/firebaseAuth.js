@@ -3,6 +3,7 @@ import {
   GithubAuthProvider,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
+  deleteUser,
   getAdditionalUserInfo,
   getAuth,
   onAuthStateChanged,
@@ -12,6 +13,7 @@ import {
   signInWithPopup,
   signOut,
   updateEmail,
+  updatePassword,
   updateProfile
 } from 'firebase/auth';
 import { sentMailSucess } from 'redux/modules/forgotMailSent';
@@ -58,7 +60,7 @@ export const loginWithEmailPassword = async (email, password, dispatch) => {
     // 에러 핸들링
   } catch (error) {
     if (error.code === 'auth/wrong-password') {
-      alert(`비밀번호가 틀렸습니다.`);
+      alert(`잘못된 비밀번호입니다.`);
     } else if (error.code === 'auth/invalid-email') {
       alert(`이메일을 다시 확인해주세요.`);
     } else if (error.code === 'auth/user-not-found') {
@@ -242,7 +244,8 @@ export const userInfoUpdate = async (
   lastNameValue,
   addressValue,
   zipcodeValue,
-  cityValue
+  cityValue,
+  phoneNumberValue
 ) => {
   updateProfile(auth.currentUser, {
     displayName: displayNameValue
@@ -259,7 +262,8 @@ export const userInfoUpdate = async (
     lastName: lastNameValue,
     address: addressValue,
     zipCode: zipcodeValue,
-    city: cityValue
+    city: cityValue,
+    phoneNumber: phoneNumberValue
   };
   console.log(otherInfo);
   const infoRef = doc(db, 'profile', auth.currentUser.uid);
@@ -342,4 +346,49 @@ export const sendVerificationMailToPrimaryEmail = () => {
     // Email verification sent!
     alert('인증메일이 발송되었습니다.\n메일 수신함을 확인해주세요.');
   });
+};
+
+// 비밀번호 변경하기
+export const changePassword = (password, confirmPassword) => {
+  if (password !== confirmPassword) {
+    alert('비밀번호가 다릅니다. 다시 입력해주세요.');
+    return;
+  }
+
+  const user = auth.currentUser;
+
+  updatePassword(user, password)
+    .then(() => {
+      alert('비밀번호가 성공적으로 업데이트되었습니다.\n로그아웃 후 다시 접속해주세요.');
+      auth.signOut();
+    })
+    .catch((err) => {
+      if (err.code === 'auth/requires-recent-login') {
+        alert('로그아웃 후 다시 시도해주세요.\n현재 계정은 로그아웃됩니다.');
+        auth.signOut();
+      }
+      console.log(err);
+    });
+};
+
+// 유저 계정 삭제
+
+export const deleteUserAccount = () => {
+  const answer = prompt('Please type "DELETE" to continue.');
+  if (answer === 'DELETE') {
+    const user = auth.currentUser;
+    deleteUser(user)
+      .then(() => {
+        alert('사용자 계정이 삭제되었습니다.');
+      })
+      .catch((err) => {
+        if (err.code === 'auth/requires-recent-login') {
+          alert('로그아웃 후 다시 시도해 주십시오\n계정이 로그아웃 됩니다.');
+          auth.signOut();
+        }
+        console.log(err);
+      });
+  } else {
+    alert('취소되었습니다.');
+  }
 };

@@ -35,7 +35,7 @@ const ProfilePageDetailProfileContainer = ({ userData }) => {
     setFirstNameValue(CombinedUserData?.firstName ?? '');
     setLastNameValue(CombinedUserData?.lastName ?? '');
     setEmailValue(userData?.email ?? userData?.user?.email ?? '');
-    setPhoneNumberValue(userData?.phoneNumber ?? '');
+    setPhoneNumberValue(CombinedUserData?.phoneNumber ?? '');
     setAddressValue(CombinedUserData?.address ?? '');
     setZipcodeValue(CombinedUserData?.zipCode ?? '');
     setCityValue(CombinedUserData?.city ?? '');
@@ -102,8 +102,7 @@ const ProfilePageDetailProfileContainer = ({ userData }) => {
             <input
               type="text"
               name="Phone Number"
-              // disabled={isDisabled}
-              disabled={true}
+              disabled={isDisabled}
               value={phoneNumberValue}
               onChange={(e) => setFunction(e, setPhoneNumberValue)}
             />
@@ -153,7 +152,15 @@ const ProfilePageDetailProfileContainer = ({ userData }) => {
         <button
           id="profile-page-save-button"
           onClick={() => {
-            userInfoUpdate(displayNameValue, firstNameValue, lastNameValue, addressValue, zipcodeValue, cityValue);
+            userInfoUpdate(
+              displayNameValue,
+              firstNameValue,
+              lastNameValue,
+              addressValue,
+              zipcodeValue,
+              cityValue,
+              phoneNumberValue
+            );
           }}
         >
           Save
@@ -167,65 +174,4 @@ export default ProfilePageDetailProfileContainer;
 
 const StyledDiv = styled.div`
   //
-
-  .profile-page-detail-container {
-    padding: 0 2rem 2rem 2rem;
-  }
-  .profile-page-detail-container h3 {
-    font-size: 1.15rem;
-    font-weight: 600;
-    padding-bottom: 1rem;
-  }
-  //
-  .profile-page-detail-input-con {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 1rem;
-  }
-  .profile-page-detail-input-con input {
-    width: 50%;
-  }
-  .profile-page-detail-input-div {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-width: 200px;
-  }
-  .profile-page-detail-input-div label {
-    color: #888;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
-  .profile-page-detail-input-div input {
-    width: 100%;
-    padding: 0.5rem 0.5rem;
-    box-shadow: 0 0 2px 0 #aaa;
-    border: none;
-    outline: black;
-  }
-  .profile-page-detail-input-div input:focus {
-    outline: black 1px solid;
-  }
-  //
-  #profile-page-button-container {
-    height: 5rem;
-    display: flex;
-    justify-content: flex-end;
-    padding: 0 2rem 2rem;
-    gap: 1rem;
-  }
-  #profile-page-button-container button {
-    width: 100px;
-    border: none;
-    box-shadow: 0 0 2px 0 #aaa;
-    background-color: #fff;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-  #profile-page-button-container button:hover {
-    box-shadow: 0 0 2px 0 #aaa;
-    background-color: #5196fe;
-    color: white;
-  }
 `;

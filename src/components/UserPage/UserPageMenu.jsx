@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   userPageChangePasswordToggler,
+  userPageDeleteAccountToggler,
   userPageMyEmailToggler,
   userPageProfileToggler
 } from 'redux/modules/profilePageMenuToggler';
@@ -9,6 +10,7 @@ import { styled } from 'styled-components';
 import Person2Icon from '@mui/icons-material/Person2';
 import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 
 function UserPageMenu() {
   const dispatch = useDispatch();
@@ -36,12 +38,12 @@ function UserPageMenu() {
           {menuToggler.MY_EMAIL ? (
             <>
               <EmailIcon style={{ color: '#3176cc' }} />
-              <h2 style={{ color: '#3176cc' }}>My email</h2>
+              <h2 style={{ color: '#3176cc' }}>My Email</h2>
             </>
           ) : (
             <>
               <EmailIcon />
-              <h2>My email</h2>
+              <h2>My Email</h2>
             </>
           )}
         </div>
@@ -49,12 +51,25 @@ function UserPageMenu() {
           {menuToggler.CHANGE_PASSWORD ? (
             <>
               <KeyIcon style={{ color: '#3176cc' }} />
-              <h2 style={{ color: '#3176cc' }}>Change password</h2>
+              <h2 style={{ color: '#3176cc' }}>Change Password</h2>
             </>
           ) : (
             <>
               <KeyIcon />
-              <h2>Change password</h2>
+              <h2>Change Password</h2>
+            </>
+          )}
+        </div>
+        <div className="profile-page-menu" onClick={() => userPageDeleteAccountToggler(dispatch)}>
+          {menuToggler.DELETE_ACCOUNT ? (
+            <>
+              <PersonRemoveIcon style={{ color: '#3176cc' }} />
+              <h2 style={{ color: '#3176cc' }}>Delete Account</h2>
+            </>
+          ) : (
+            <>
+              <PersonRemoveIcon />
+              <h2>Delete Account</h2>
             </>
           )}
         </div>

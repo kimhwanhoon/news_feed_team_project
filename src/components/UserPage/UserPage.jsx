@@ -5,6 +5,7 @@ import { styled } from 'styled-components';
 import ProfilePageDetailProfileContainer from './UserPageProfile';
 import UserMyEmail from './UserMyEmail';
 import UserChangePassword from './UserChangePassword';
+import UserDeleteAccount from './UserDeleteAccount';
 
 function UserPageDetail() {
   const userData = useSelector((state) => {
@@ -39,6 +40,14 @@ function UserPageDetail() {
           <h1>Change Password</h1>
           <div className="profile-detail-container">
             <UserChangePassword />
+          </div>
+        </>
+      )}
+      {menuToggler.DELETE_ACCOUNT && (
+        <>
+          <h1>Delete Account</h1>
+          <div className="profile-detail-container">
+            <UserDeleteAccount />
           </div>
         </>
       )}
