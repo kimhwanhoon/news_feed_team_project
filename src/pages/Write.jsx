@@ -43,7 +43,7 @@ const Write = () => {
       <h2> 글쓰기 </h2>
 
       <StoryModal />
-
+      {/* 
       <button
         onClick={() => {
           setCategory(1);
@@ -71,8 +71,7 @@ const Write = () => {
         }}
       >
         4
-      </button>
-
+      </button> */}
       {filteredTodos.map((todo) => {
         return (
           <div>
@@ -82,8 +81,8 @@ const Write = () => {
                 border: '1px solid black',
                 padding: '10px',
                 margin: '10px',
-                width: '300px',
-                height: '250px'
+                width: '80%',
+                height: '70%'
               }}
             >
               <h5>{todo.title}</h5>

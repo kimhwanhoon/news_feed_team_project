@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { styled } from 'styled-components';
 import InputArea from './InputArea';
 import Catagory from './Catagory';
+import { FaRegPaperPlane } from 'react-icons/fa';
 
 const StoryModal = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,19 +32,21 @@ const StoryModal = () => {
 
   return (
     <div>
-      <StButton onClick={openModal}>나의 이야기를 써보세요</StButton>
+      <StButton onClick={openModal}>
+        <FaRegPaperPlane />
+        나의 이야기를 써보세요
+      </StButton>
       {isOpen && (
         <StModalBox>
           <StModalItem>
             <StModalContents>
               <p>
-                <InputArea selectedOption={selectedOption} />
+                <InputArea selectedOption={selectedOption} closeModal={closeModal} />
               </p>
-              <button onClick={closeModal}>닫기</button>
 
-              <p>
+              {/* <p>
                 <Catagory options={options} selectedOption={selectedOption} setSelectedOption={setSelectedOption} />
-              </p>
+              </p> 태그 기능 삭제로 안씀 */}
             </StModalContents>
           </StModalItem>
         </StModalBox>
@@ -90,8 +93,25 @@ const StButton = styled.button`
   border: none;
   cursor: pointer;
   border-radius: 8px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(34, 73, 201, 0.5);
   color: rgb(0, 0, 0);
   height: 40px;
-  width: 100px;
+  width: 200px;
+  box-shadow: 5px 5px 5px #778899;
+`;
+
+const StSB = styled.button`
+  font-size: 14px;
+  line-height: 1em;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  pointer-events: auto;
+  border: none;
+  white-space: nowrap;
+  transition: all 0.1s ease-out 0s;
+  color: rgb(255, 255, 255);
+  background-color: rgb(39, 24, 137);
+  overflow: hidden;
+  touch-action: none;
 `;

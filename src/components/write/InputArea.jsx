@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import uuid from 'react-uuid';
 
-const InputArea = ({ selectedOption }) => {
+const InputArea = ({ selectedOption, closeModal }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -26,7 +26,7 @@ const InputArea = ({ selectedOption }) => {
         id: uuid(),
         title,
         content,
-        selectedOption: Number(selectedOption),
+        selectedOption,
         isDone: false
       }
     });
@@ -65,7 +65,9 @@ const InputArea = ({ selectedOption }) => {
             }}
           />
         </div>
-        <button>저장</button>
+        <br />
+        <StBT>저장</StBT>
+        <StBT onClick={closeModal}>닫기</StBT>
       </form>
     </>
   );
@@ -82,6 +84,7 @@ const StInput = styled.input`
   padding-left: 12px;
   padding-right: 12px;
   margin: 10px;
+  border: hidden 3px;
 `;
 const StInput2 = styled.input`
   border: 1px solid #333333;
@@ -92,4 +95,23 @@ const StInput2 = styled.input`
   padding-left: 12px;
   padding-right: 12px;
   margin: 10px;
+  border: hidden 3px;
+`;
+
+const StBT = styled.button`
+  font-size: 14px;
+  line-height: 1em;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  pointer-events: auto;
+  border: none;
+  white-space: nowrap;
+  transition: all 0.1s ease-out 0s;
+  color: whitesmoke;
+  background-color: #5353ef;
+  overflow: hidden;
+  touch-action: none;
+  margin-right: 4px;
+  float: right;
 `;
