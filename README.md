@@ -10,4 +10,10 @@
 
 ---
 
+! 추가된 라이브러리
+
+### 라이브러리 추가하기
+
+[] `npm install @mui/icons-material @mui/material @emotion/styled @emotion/react`
+
 ### yarn start로 시작
