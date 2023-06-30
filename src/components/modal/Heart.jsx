@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 
 const Heart = styled.img`
   width: 30px;
@@ -14,7 +14,7 @@ const HeartBtn = ({ initialLike, onClick }) => {
   };
   return (
     <>
-      <Heart src={like ? '../assets/heart (1).png' : '../assets/heart.png'} onClick={handleLikeClick} />
+      <Heart src={like ? '../img/heart (1).png' : '../img/heart.png'} onClick={handleLikeClick} />
     </>
   );
 };

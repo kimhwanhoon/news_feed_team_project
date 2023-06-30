@@ -1,10 +1,11 @@
 import './App.css';
+import './reset.css';
 import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import Feed from './components/Feed';
 import Searchbar from './components/Searchbar';
-
+import Router from 'shared/Router';
 import Detail from './shared/detail';
 
 const App = () => {
@@ -32,6 +33,7 @@ const App = () => {
       </div>
       <Feed feeds={feeds} setFeeds={setFeeds} searchValue={searchValue} />
       <Detail />
+      <Router />;
     </div>
   );
 };

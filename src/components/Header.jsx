@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import LoginModal from './auth/Login';
 import SignUpModal from './auth/SignUp';
 import { useDispatch, useSelector } from 'react-redux';

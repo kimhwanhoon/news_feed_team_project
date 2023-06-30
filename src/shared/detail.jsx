@@ -1,7 +1,7 @@
 //-----------------게시글 클릭시 나오는 모달창--------------------
 import React, { useState } from 'react';
-import { styled } from 'styled-components';
-import css from 'styled-components';
+import styled from 'styled-components';
+import { css } from 'styled-components';
 import HeartBtn from 'components/modal/Heart';
 
 //---------style-component-------------------
@@ -58,12 +58,13 @@ export const DetailBox = styled.div`
   grid-row: 2;
   grid-column: 1;
   overflow: auto;
-  ${(props) =>
-    props.scrollable && //스크롤바 생성
+  ${props =>
+    props.scrollable &&
     css`
       max-height: 250px;
     `}
 `;
+
 
 //Modal 뒤 배경
 export const ModalBackdrop = styled.div`
@@ -101,7 +102,7 @@ export const Modal = ({ closeModal, text, isOpen }) => {
             <ModalBackdrop onClick={handleBackdropClick} />
             <DetailModal>
               <DetailTitle>
-                <User src={'../assets/user (1).png'} />
+                <User src={'../img/user (1).png'} />
                 nickname
               </DetailTitle>
               <DetailBox scrollable>{text}</DetailBox>

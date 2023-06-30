@@ -22,7 +22,14 @@ import {
   signupUserDataUpdate
 } from 'redux/modules/user';
 
-const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG);
+const firebaseConfig = {
+  apiKey: 'AIzaSyAG00FHecpm2cTz3zgTNa3txr5MUQ0tJDA',
+  authDomain: 'newsfeed-cc49d.firebaseapp.com',
+  projectId: 'newsfeed-cc49d',
+  storageBucket: 'newsfeed-cc49d.appspot.com',
+  messagingSenderId: '533615190194',
+  appId: '1:533615190194:web:6d34340197080fb56b69ab'
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
