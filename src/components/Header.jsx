@@ -38,7 +38,9 @@ function Header() {
   const subscribedUserData = useSelector((state) => {
     return state.userData;
   });
-
+  const headerMenuButtonClassName = useSelector((state) => {
+    return state.HeaderMenuButtonToggler.HeaderMenuToggle;
+  });
   return (
     <>
       <StyledHeader>
@@ -53,7 +55,7 @@ function Header() {
                 id="header-login-button"
                 onClick={() => handleToggleLoginModal(dispatch)}
                 // className={loginButtonClassName}
-                src="img/login.png"
+                src="https://i.ibb.co/VmK9M1R/4115234-login-sign-in-114046.png"
                 alt="login"
               />
             )}
@@ -62,7 +64,7 @@ function Header() {
                 id="header-logout-button"
                 onClick={() => logOut(dispatch)}
                 // className={logoutButtonClassName}
-                src="img/logout.png"
+                src="https://i.ibb.co/QKfs48k/logout-icon-151219.png"
                 alt="logout"
               />
             )}
@@ -99,7 +101,12 @@ function Header() {
                     'Not signed in'
                 }
               </p>
-              <img id="header-profile-more-button" src="img/arrow_down.png" alt="header menu" />
+              <img
+                id=""
+                src="https://i.ibb.co/XCyzThz/arrow-down.png"
+                alt="header menu"
+                className="header-profile-menu-button"
+              />
             </div>
           </div>
         </div>
@@ -129,7 +136,7 @@ const UserOptions = () => {
             className="header-user-info-option"
             onClick={() => {
               handleToggleHeaderMenuButton(dispatch);
-              navigate('/profile-page');
+              navigate(`/profile-page/user/${currentUser?.uid}`);
             }}
           >
             유저 정보
@@ -161,6 +168,7 @@ const UserOptions = () => {
 };
 
 const Nav = () => {
+  const currentUser = useAuth();
   return (
     <nav>
       <a id="nav-home" href="/">
@@ -169,7 +177,7 @@ const Nav = () => {
       <a id="nav-write" href="/">
         Write
       </a>
-      <a id="nav-profile" href="/profile-page">
+      <a id="nav-profile" href={`/profile-page/user/${currentUser?.uid}`}>
         Profile
       </a>
     </nav>
@@ -213,14 +221,10 @@ const StyledHeader = styled.header`
     justify-content: center;
   }
   #header-button-div img {
-    box-shadow: 0 0 3px 0px #ddd;
-    border-radius: 100%;
     cursor: pointer;
     transition: cubic-bezier(0, 0, 0.2, 1) 0.3s;
-    width: 40px;
+    width: 32px;
     margin-right: 1rem;
-    background-color: #f0f0f0;
-    padding: 7px;
   }
   #header-button-div img:hover {
     transform: scale(1.05);
@@ -237,7 +241,7 @@ const StyledHeader = styled.header`
     opacity: 1;
     transition: 0.3s ease-in-out;
   }
-  #header-profile-more-button {
+  .header-profile-menu-button {
     width: 16px;
   }
 

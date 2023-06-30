@@ -15,13 +15,13 @@ export const toggleForgotPasswordModalClassName = () => ({
   type: TOGGLE_MODAL_ACTION_TYPES.FORGOT_PASSWORD_MODAL
 });
 
-// 리듀서
 const initialState = {
   LOGIN_MODAL: 'modal-container hidden',
   SIGNUP_MODAL: 'modal-container hidden',
   FORGOT_PASSWORD_MODAL: 'modal-container small hidden'
 };
 
+// 리듀서
 const loginModalToggler = (state = initialState, action) => {
   switch (action.type) {
     case TOGGLE_MODAL_ACTION_TYPES.LOGIN_MODAL: {

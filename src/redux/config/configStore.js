@@ -4,6 +4,7 @@ import isResetMailSent from 'redux/modules/forgotMailSent';
 import HeaderMenuButtonToggler from 'redux/modules/headerMenuToggle';
 import isLoginSuccess from 'redux/modules/isLoginSuccess';
 import loginModalToggler from 'redux/modules/loginModalToggler';
+import profilePageMenuToggler from 'redux/modules/profilePageMenuToggler';
 import userData from 'redux/modules/user';
 import userPageInputToggler from 'redux/modules/userPageInputToggler';
 const rootReducer = combineReducers({
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
   isResetMailSent,
   loginModalToggler,
   HeaderMenuButtonToggler,
-  userPageInputToggler
+  userPageInputToggler,
+  profilePageMenuToggler
 });
 const store = createStore(rootReducer);
 

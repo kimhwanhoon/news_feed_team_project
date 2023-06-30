@@ -6,10 +6,12 @@ import {
   getAdditionalUserInfo,
   getAuth,
   onAuthStateChanged,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updateEmail,
   updateProfile
 } from 'firebase/auth';
 import { sentMailSucess } from 'redux/modules/forgotMailSent';
@@ -296,9 +298,48 @@ export const fetchUserPageInfo = async (currentUser, setCombinedUserData) => {
   const docSnap = await getDoc(userInfoRef);
 
   if (docSnap.exists()) {
-    console.log('doc data', docSnap.data());
     setCombinedUserData(docSnap.data());
   } else {
     console.log('data not found!');
   }
+};
+
+//유저 Secondary 이메일 정보 업데이트
+export const userSecondaryEmailUpdate = async (secondaryEmail) => {
+  try {
+    const otherInfo = {
+      secondaryEmail
+    };
+    const infoRef = doc(db, 'profile', auth.currentUser.uid);
+    await setDoc(infoRef, otherInfo, { merge: true });
+    alert('성공적으로 등록했습니다.');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//유저 Primary 이메일 정보 업데이트
+export const userPrimaryEmailUpdate = async (primaryEmail) => {
+  updateEmail(auth.currentUser, primaryEmail)
+    .then(() => {
+      // Email updated!
+      alert('성공적으로 등록했습니다.');
+    })
+    .catch((error) => {
+      // An error occurred
+      console.log(error);
+      if (error.code === 'auth/requires-recent-login') {
+        alert('로그아웃 후, 다시 로그인 한 후 작업을 이어가 주세요.\n로그아웃 됩니다.');
+        auth.signOut();
+      }
+    });
+};
+
+// 유저의 primary 이메일 인증 메일 보내기
+
+export const sendVerificationMailToPrimaryEmail = () => {
+  sendEmailVerification(auth.currentUser).then(() => {
+    // Email verification sent!
+    alert('인증메일이 발송되었습니다.\n메일 수신함을 확인해주세요.');
+  });
 };
