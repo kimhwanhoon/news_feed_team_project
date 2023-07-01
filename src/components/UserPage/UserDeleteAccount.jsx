@@ -13,7 +13,7 @@ function UserDeleteAccount() {
             Delete your account will permanently delete your account.
           </h3>
           <p>Are you sure you want to delete your account?</p>
-          <button onClick={deleteUserAccount}>Change password</button>
+          <button onClick={deleteUserAccount}>Delete Account</button>
         </div>
       </div>
     </StyledDiv>
