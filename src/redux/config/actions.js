@@ -9,6 +9,8 @@ export const SET_POSTS = 'SET_POSTS';
 // 프로필 이미지 설정 액션 타입
 export const SET_PROFILE_IMAGE = 'SET_PROFILE_IMAGE';
 
+export const USER_DATA_ACTION_TYPES = 'USER_DATA_ACTION_TYPES'
+
 // 사용자 정보 설정 액션 생성자
 export const setUser = (user) => ({
   type: SET_USER,
@@ -26,3 +28,10 @@ export const setProfileImage = (imageUrl) => ({
   type: SET_PROFILE_IMAGE,
   payload: imageUrl
 });
+
+//글 작성 설정 액션 생성자
+export const loginAction = () => {
+  return {
+    type: 'LOGIN' 
+  };
+};

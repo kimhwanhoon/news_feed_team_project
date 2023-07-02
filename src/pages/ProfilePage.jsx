@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from 'react-redux';
+import { fetchUserDate } from 'redux/modules/user';
+import { useDispatch } from 'react-redux';
 
 const ProfilePage = () => {
+  const dispatch = useDispatch();
+
+  useEffect(()=> {
+    dispatch(fetchUserDate());
+  },[dispatch])
+    
   const [profileImage, setProfileImage] = useState(null);
   const [name, setName] = useState('');
   const [jobHobby, setJobHobby] = useState('');
@@ -27,9 +36,10 @@ const ProfilePage = () => {
   };
 
   const handleSave = () => {
-    // 프로필 정보를 저장하는 로직을 추가하세요
-    console.log('프로필 정보 저장:', { name, jobHobby, introduction });
-    toast.success('저장이 완료되었습니다.'); // 저장 완료 알림
+    const userData = { name, jobHobby, introduction, profileImage };
+    saveUserData(userData)
+      .then(() => toast.success('저장이 완료되었습니다.'))
+      .catch((error) => toast.error('저장 중 오류가 발생했습니다.'));
   };
 
   const myPosts = [
@@ -37,6 +47,16 @@ const ProfilePage = () => {
     { id: 2, title: '두 번째 글', content: '내가 쓴 두 번째 글입니다.' },
     { id: 3, title: '세 번째 글', content: '내가 쓴 세 번째 글입니다.' }
   ];
+
+  const user = useSelector((state) => state.user);
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setJobHobby(user.jobHobby);
+      setIntroduction(user.introduction);
+      setProfileImage(user.profileImage);
+    }
+  }, [user]); // user가 변경될 때마다 프로필 정보를 업데이트합니다.
 
   return (
     <Container>

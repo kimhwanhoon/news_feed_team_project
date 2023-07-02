@@ -1,8 +1,17 @@
 //-----------------게시글 클릭시 나오는 모달창--------------------
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { css } from 'styled-components';
-import HeartBtn from 'components/modal/Heart';
+import HeartBtn from 'modal/Heart';
+import axios from 'axios';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { firebaseConfig } from '../firebase';
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+console.log(firebaseConfig.apiKey);
+console.log(app.name);
 
 //---------style-component-------------------
 //-----모달창-----
@@ -82,9 +91,19 @@ export const Modal = ({ closeModal, text, isOpen }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
   //좋아요 하트 버튼
-  const handleLikeClick = (newLike) => {
-    setIsLiked(newLike);
-  };
+
+  useEffect(async () => {
+    const fetchData = async () => {
+      const res = await axios.get('/api/data');
+      if (res.data.type === 'liked') setIsLiked(true)
+    }
+    fetchData()
+  }, []);
+  
+  const handleLikeClick = async (e) => {
+    const res = await axios.post('/api/like', { postId: 123 }); // [POST] 사용자가 좋아요를 누름 -> DB 갱신
+    setIsLiked(!isLiked)
+  }
 
 
   //배경 누르는 이벤트

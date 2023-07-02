@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -30,6 +30,7 @@ const Auth = () => {
       console.log('error with signUp', errorCode, errorMessage);
     }
   };
+
   const signIn = async (event) => {
     event.preventDefault();
     try {
@@ -41,6 +42,7 @@ const Auth = () => {
       console.log('error with signIn', errorCode, errorMessage);
     }
   };
+
   const logOut = async (event) => {
     event.preventDefault();
     await signOut(auth);

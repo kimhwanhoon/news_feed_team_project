@@ -3,19 +3,24 @@ import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import styled from 'styled-components';
 import Modal from '../shared/detail';
-
+import { useSelector } from 'react-redux';
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 
 const FeedItem = ({ feed, setFeeds }) => {
+  const user = useSelector((state) => state.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const updateFeed = async () => {
     const newFeedText = prompt('수정 내용 입력:', feed.text);
 
     if (newFeedText) {
-      const feedRef = doc(db, 'feeds', feed.id);
-      await updateDoc(feedRef, { ...feed, text: newFeedText });
-
+      const feedRef = await addDoc(collection(db, 'feeds'), {
+        text: newFeedText,
+        createdAt: serverTimestamp(),
+        authorName: user.name,  // 작성자 이름 저장
+        authorProfileImage: user.profileImage,  // 작성자의 프로필 사진 URL을 저장
+      });
       setFeeds((prev) => {
         return prev.map((element) => {
           if (element.id === feed.id) {
@@ -38,16 +43,11 @@ const FeedItem = ({ feed, setFeeds }) => {
   };
 
   const openModal = () => {
-    if (!isModalOpen) {
-      setIsModalOpen(true);
-    }
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    if (isModalOpen) {
-      setIsModalOpen(false);
-
-    }
+    setIsModalOpen(false);
   };
 
   return (
@@ -60,6 +60,10 @@ const FeedItem = ({ feed, setFeeds }) => {
         </DeleteButtonWrapper>
         <StyledTextWrapper>
           <StyledText>{feed.text}</StyledText>
+          <AuthorInfo>
+            <AuthorName>{user ? user.name : ''}</AuthorName>
+            {user && user.photoURL && <AuthorImage src={user.photoURL} />}
+          </AuthorInfo>
         </StyledTextWrapper>
       </StyledFeed>
     </AppContainer>
@@ -108,6 +112,21 @@ const DeleteButton = styled.button`
   border: none;
   background-color: transparent;
   cursor: pointer;
+`;
+
+const AuthorInfo = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const AuthorName = styled.span`
+  margin-right: 10px;
+`;
+
+const AuthorImage = styled.img`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 `;
 
 export default FeedItem;

@@ -3,15 +3,20 @@ import { loginWithEmailPassword, loginWithGithub, loginWithGoogle } from 'fireba
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ForgotPassword, { toggleForgotPasswordModal } from './ForgotPassword';
-
+import { setUser } from 'redux/config/actions';
 const inputOnChangeHandler = (e, setFn) => {
   setFn(e.target.value);
 };
 
-function LoginModal() {
+function LoginModal({onclose}) {
   //
   const dispatch = useDispatch();
   //
+  const login = async (loginFn, ...args) => {
+    const userInfo = await loginFn(...args);
+    dispatch(setUser(userInfo)); // 로그인 성공 후 사용자 정보 디스패치
+  };
+
   const isLoginSuccess = useSelector((state) => {
     return state.isLoginSuccess.loginSuccess;
   });
@@ -28,7 +33,7 @@ function LoginModal() {
     <>
       <section id="login-modal" className="modal-container hidden">
         <div className="modal">
-          <button onClick={loginOnClickHandler} className="close-button">
+          <button onClick={onclose} className="close-button">
             &times;
           </button>
           <div className="modal-h-container">
