@@ -290,7 +290,7 @@ export const useAuth = () => {
 export const uploadPhoto = async (photo, currentUser, setLoading, dispatch) => {
   const fileRef = ref(storage, `profile/${currentUser.uid}.image}`);
   setLoading(true);
-  const snapshot = await uploadBytes(fileRef, photo);
+  await uploadBytes(fileRef, photo);
 
   const photoURL = await getDownloadURL(fileRef);
 
