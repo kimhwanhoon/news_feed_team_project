@@ -1,5 +1,6 @@
 import { changePassword, useAuth } from 'firebaseConfig/firebaseAuth';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { styled } from 'styled-components';
 
 function UserChangePassword() {
@@ -7,7 +8,7 @@ function UserChangePassword() {
   //
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const dispatch = useDispatch();
   return (
     <StyledDiv>
       <div className="profile-detail-container">
@@ -33,7 +34,7 @@ function UserChangePassword() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
-                  <button onClick={() => changePassword(password, confirmPassword)}>Change password</button>
+                  <button onClick={() => changePassword(password, confirmPassword, dispatch)}>Change password</button>
                 </div>
               </div>
             </>

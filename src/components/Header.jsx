@@ -4,28 +4,30 @@ import LoginModal from './auth/Login';
 import SignUpModal from './auth/SignUp';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut, loggedInUserCheck, useAuth } from 'firebaseConfig/firebaseAuth';
-import { fetchUserDate } from 'redux/modules/user';
+import { fetchUserData } from 'redux/modules/user';
 import { handleToggleLoginModal } from 'redux/modules/loginModalToggler';
 import { handleToggleHeaderMenuButton } from 'redux/modules/headerMenuToggle';
 import { useNavigate } from 'react-router-dom';
 
 function Header() {
+  // store에서 userdata를 구독하여
+  // 나중에 dispatch로 userdata가 변경되면 재랜더링을 되게 한다.
+  const subscribedUserData = useSelector((state) => {
+    return state.userData;
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   //유저가 로그인 되어있는지 확인하여 새로고침해도 로그아웃이 되지 않게 설정
   const currentUser = useAuth();
+  console.log(subscribedUserData);
   useEffect(() => {
     loggedInUserCheck()
-      .then((userData) => {
-        if (!userData) {
-          // handleToggleLoginButton(dispatch);
+      .then((subscribedUserData) => {
+        if (!subscribedUserData) {
           return;
         } else {
-          dispatch(fetchUserDate(userData));
-          // 로그인이 되어있다면 로그인 버튼을 없애고 로그아웃버튼을 보이기
-
-          // handleToggleLogoutButton(dispatch);
+          dispatch(fetchUserData(subscribedUserData));
         }
       })
       .catch((error) => {
@@ -33,14 +35,6 @@ function Header() {
       });
   }, [dispatch]);
 
-  // store에서 userdata를 구독하여
-  // 나중에 dispatch로 userdata가 변경되면 재랜더링을 되게 한다.
-  const subscribedUserData = useSelector((state) => {
-    return state.userData;
-  });
-  const headerMenuButtonClassName = useSelector((state) => {
-    return state.HeaderMenuButtonToggler.HeaderMenuToggle;
-  });
   return (
     <>
       <StyledHeader>
@@ -54,7 +48,6 @@ function Header() {
               <img
                 id="header-login-button"
                 onClick={() => handleToggleLoginModal(dispatch)}
-                // className={loginButtonClassName}
                 src="https://i.ibb.co/VmK9M1R/4115234-login-sign-in-114046.png"
                 alt="login"
               />
@@ -63,7 +56,6 @@ function Header() {
               <img
                 id="header-logout-button"
                 onClick={() => logOut(dispatch)}
-                // className={logoutButtonClassName}
                 src="https://i.ibb.co/QKfs48k/logout-icon-151219.png"
                 alt="logout"
               />
@@ -78,6 +70,7 @@ function Header() {
                 // subscribedUserData.profile.picture: Google
                 // subscribedUserData.profile.avatar_url: Github
                 // 맨 처음 로드시 아무런 정보가 없기 때문에 옵셔널 체이닝(?.)을 사용하여 에러를 예방
+                subscribedUserData?.user?.photoURL ??
                 subscribedUserData?.photoURL ??
                 subscribedUserData?.profile?.picture ??
                 subscribedUserData?.profile?.avatar_url ??

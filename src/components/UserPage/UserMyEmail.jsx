@@ -6,11 +6,12 @@ import {
   userSecondaryEmailUpdate
 } from 'firebaseConfig/firebaseAuth';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { styled } from 'styled-components';
 
 function UserMyEmail() {
   const currentUser = useAuth();
-
+  const dispatch = useDispatch();
   const [CombinedUserData, setCombinedUserData] = useState(null);
   // fetch user data from fireStore
   useEffect(() => {
@@ -42,7 +43,19 @@ function UserMyEmail() {
                 onChange={(e) => setPrimaryEmail(e.target.value)}
                 disabled={isPrimaryMailDisabled}
               />
-              <button onClick={() => userPrimaryEmailUpdate(primaryEmail)}>Change primary email</button>
+              <button
+                onClick={() =>
+                  userPrimaryEmailUpdate(
+                    primaryEmail,
+                    currentUser,
+                    setIsPrimaryMailDisabled,
+                    isPrimaryMailDisabled,
+                    dispatch
+                  )
+                }
+              >
+                Change primary email
+              </button>
             </div>
             <div className="profile-page-detail-input-div">
               <p onClick={() => setIsSecondaryMailDisabled(!isSecondaryMailDisabled)}>Edit</p>
@@ -54,7 +67,13 @@ function UserMyEmail() {
                 onChange={(e) => setSecondaryEmail(e.target.value)}
                 disabled={isSecondaryMailDisabled}
               />
-              <button onClick={() => userSecondaryEmailUpdate(secondaryEmail)}>Change Secondary email</button>
+              <button
+                onClick={() =>
+                  userSecondaryEmailUpdate(secondaryEmail, setIsSecondaryMailDisabled, isSecondaryMailDisabled)
+                }
+              >
+                Change Secondary email
+              </button>
             </div>
           </div>
           <div>

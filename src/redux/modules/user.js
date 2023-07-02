@@ -28,7 +28,7 @@ export const deleteUserDataBySignout = () => {
   };
 };
 
-export const fetchUserDate = (payload) => {
+export const fetchUserData = (payload) => {
   return {
     type: USER_DATA_ACTION_TYPES.FETCH_DATA,
     payload
@@ -66,3 +66,8 @@ const userData = (state = initialState, action) => {
 };
 
 export default userData;
+
+// 모달 토글 함수
+export const handleUserLogout = (dispatch) => {
+  dispatch(deleteUserDataBySignout());
+};

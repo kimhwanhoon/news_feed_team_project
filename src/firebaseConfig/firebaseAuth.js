@@ -26,6 +26,7 @@ import {
 } from 'redux/modules/loginModalToggler';
 import {
   deleteUserDataBySignout,
+  handleUserLogout,
   saveUserDataWithEmail,
   saveUserDataWithSocial,
   signupUserDataUpdate
@@ -133,9 +134,8 @@ export const loginWithGithub = (dispatch, e) => {
 export const logOut = (dispatch) => {
   signOut(auth)
     .then(() => {
-      dispatch(deleteUserDataBySignout());
+      handleUserLogout(dispatch);
       dispatch(logoutSucess());
-
       alert('안전하게 로그아웃되었습니다.');
     })
     .catch((error) => {
@@ -245,13 +245,16 @@ export const userInfoUpdate = async (
   addressValue,
   zipcodeValue,
   cityValue,
-  phoneNumberValue
+  phoneNumberValue,
+  dispatch,
+  toggleUserPageInputDisabled
 ) => {
   updateProfile(auth.currentUser, {
     displayName: displayNameValue
   })
     .then(() => {
       alert('Profile updated!');
+      dispatch(toggleUserPageInputDisabled());
     })
     .catch((error) => {
       console.log('error', error);
@@ -265,7 +268,6 @@ export const userInfoUpdate = async (
     city: cityValue,
     phoneNumber: phoneNumberValue
   };
-  console.log(otherInfo);
   const infoRef = doc(db, 'profile', auth.currentUser.uid);
   await setDoc(infoRef, otherInfo, { merge: true });
 };
@@ -303,13 +305,11 @@ export const fetchUserPageInfo = async (currentUser, setCombinedUserData) => {
 
   if (docSnap.exists()) {
     setCombinedUserData(docSnap.data());
-  } else {
-    console.log('data not found!');
   }
 };
 
 //유저 Secondary 이메일 정보 업데이트
-export const userSecondaryEmailUpdate = async (secondaryEmail) => {
+export const userSecondaryEmailUpdate = async (secondaryEmail, setIsSecondaryMailDisabled, isSecondaryMailDisabled) => {
   try {
     const otherInfo = {
       secondaryEmail
@@ -317,24 +317,40 @@ export const userSecondaryEmailUpdate = async (secondaryEmail) => {
     const infoRef = doc(db, 'profile', auth.currentUser.uid);
     await setDoc(infoRef, otherInfo, { merge: true });
     alert('성공적으로 등록했습니다.');
+    setIsSecondaryMailDisabled(!isSecondaryMailDisabled);
   } catch (error) {
     console.log(error);
   }
 };
 
 //유저 Primary 이메일 정보 업데이트
-export const userPrimaryEmailUpdate = async (primaryEmail) => {
+export const userPrimaryEmailUpdate = async (
+  primaryEmail,
+  currentUser,
+  setIsPrimaryMailDisabled,
+  isPrimaryMailDisabled,
+  dispatch
+) => {
+  if (primaryEmail === currentUser.email) {
+    alert('기존의 이메일과 같습니다.');
+    return;
+  }
   updateEmail(auth.currentUser, primaryEmail)
     .then(() => {
       // Email updated!
       alert('성공적으로 등록했습니다.');
+      setIsPrimaryMailDisabled(!isPrimaryMailDisabled);
     })
     .catch((error) => {
       // An error occurred
       console.log(error);
       if (error.code === 'auth/requires-recent-login') {
         alert('로그아웃 후, 다시 로그인 한 후 작업을 이어가 주세요.\n로그아웃 됩니다.');
+        handleUserLogout(dispatch);
         auth.signOut();
+      }
+      if (error.code === 'auth/invalid-email') {
+        alert('이메일 형식을 다시 확인해주세요.');
       }
     });
 };
@@ -349,9 +365,13 @@ export const sendVerificationMailToPrimaryEmail = () => {
 };
 
 // 비밀번호 변경하기
-export const changePassword = (password, confirmPassword) => {
+export const changePassword = (password, confirmPassword, dispatch) => {
   if (password !== confirmPassword) {
     alert('비밀번호가 다릅니다. 다시 입력해주세요.');
+    return;
+  }
+  if (password.length < 8) {
+    alert('비밀번호는 8자리 이상의 강력한 비밀번호를 사용해주세요.');
     return;
   }
 
@@ -360,11 +380,13 @@ export const changePassword = (password, confirmPassword) => {
   updatePassword(user, password)
     .then(() => {
       alert('비밀번호가 성공적으로 업데이트되었습니다.\n로그아웃 후 다시 접속해주세요.');
+      handleUserLogout(dispatch);
       auth.signOut();
     })
     .catch((err) => {
       if (err.code === 'auth/requires-recent-login') {
         alert('로그아웃 후 다시 시도해주세요.\n현재 계정은 로그아웃됩니다.');
+        handleUserLogout(dispatch);
         auth.signOut();
       }
       console.log(err);
@@ -373,22 +395,28 @@ export const changePassword = (password, confirmPassword) => {
 
 // 유저 계정 삭제
 
-export const deleteUserAccount = () => {
-  const answer = prompt('Please type "DELETE" to continue.');
-  if (answer === 'DELETE') {
-    const user = auth.currentUser;
-    deleteUser(user)
-      .then(() => {
-        alert('사용자 계정이 삭제되었습니다.');
-      })
-      .catch((err) => {
-        if (err.code === 'auth/requires-recent-login') {
-          alert('로그아웃 후 다시 시도해 주십시오\n계정이 로그아웃 됩니다.');
-          auth.signOut();
-        }
-        console.log(err);
-      });
+export const deleteUserAccount = (checkbox, dispatch) => {
+  if (checkbox.current.checked) {
+    const answer = prompt('To confirm, type "DELETE".\n(case sensitive)');
+    if (answer === 'DELETE') {
+      const user = auth.currentUser;
+      deleteUser(user)
+        .then(() => {
+          alert('사용자 계정이 삭제되었습니다.');
+          handleUserLogout(dispatch);
+        })
+        .catch((err) => {
+          if (err.code === 'auth/requires-recent-login') {
+            alert('로그아웃 후 다시 시도해 주십시오\n계정이 로그아웃 됩니다.');
+            handleUserLogout(dispatch);
+            auth.signOut();
+          }
+          console.log(err);
+        });
+    } else {
+      alert('취소되었습니다.');
+    }
   } else {
-    alert('취소되었습니다.');
+    alert('Please confirm to delete by clicking checkbox.');
   }
 };

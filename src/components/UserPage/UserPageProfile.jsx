@@ -43,7 +43,7 @@ const ProfilePageDetailProfileContainer = ({ userData }) => {
   const setFunction = (e, setFn) => {
     setFn(e.target.value);
   };
-
+  const [showEmailHover, setShowEmailHover] = useState(false);
   return (
     <StyledDiv>
       <div className="profile-page-detail-container">
@@ -86,11 +86,25 @@ const ProfilePageDetailProfileContainer = ({ userData }) => {
         </div>
         <div className="profile-page-detail-input-con">
           <div className="profile-page-detail-input-div">
-            <label htmlFor="Email Address">Email address</label>
+            <label htmlFor="Email Address">
+              Email address&nbsp;
+              {/*  */}
+              <span
+                id="email-address-helper"
+                onMouseEnter={() => setShowEmailHover(true)}
+                onMouseLeave={() => setShowEmailHover(false)}
+              >
+                [?]
+              </span>
+              {showEmailHover && (
+                <div id="email-hover">
+                  <p>You can edit on "My Email" menu.</p>
+                </div>
+              )}
+            </label>
             <input
               type="text"
               name="Email Address"
-              // disabled={isDisabled}
               disabled={true}
               onChange={(e) => setFunction(e, setEmailValue)}
               value={emailValue}
@@ -151,6 +165,7 @@ const ProfilePageDetailProfileContainer = ({ userData }) => {
         </button>
         <button
           id="profile-page-save-button"
+          disabled={isDisabled}
           onClick={() => {
             userInfoUpdate(
               displayNameValue,
@@ -159,7 +174,9 @@ const ProfilePageDetailProfileContainer = ({ userData }) => {
               addressValue,
               zipcodeValue,
               cityValue,
-              phoneNumberValue
+              phoneNumberValue,
+              dispatch,
+              toggleUserPageInputDisabled
             );
           }}
         >
@@ -174,4 +191,20 @@ export default ProfilePageDetailProfileContainer;
 
 const StyledDiv = styled.div`
   //
+  #email-address-helper {
+    color: #222;
+    cursor: pointer;
+  }
+  #email-address-helper:hover {
+    text-decoration: underline;
+  }
+  #email-hover {
+    display: inline-block;
+    margin-left: 1rem;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid black;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+  }
 `;

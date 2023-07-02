@@ -1,19 +1,26 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { styled } from 'styled-components';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import { deleteUserAccount } from 'firebaseConfig/firebaseAuth';
+import { useDispatch } from 'react-redux';
 
 function UserDeleteAccount() {
+  const checkbox = useRef('');
+  const dispatch = useDispatch();
   return (
     <StyledDiv>
-      <div className="profile-detail-container">
+      <div className="profile-detail-container" id="profile-detail-delete-account-container">
         <div className="profile-page-detail-container">
           <DangerousIcon style={{ color: 'red' }} />
           <h3 id="delete-account-warning" className="profile-detail-my-email-subtitle" style={{ color: 'red' }}>
             Delete your account will permanently delete your account.
           </h3>
           <p>Are you sure you want to delete your account?</p>
-          <button onClick={deleteUserAccount}>Delete Account</button>
+          <span>
+            <input type="checkbox" name="confirm to delete account" ref={checkbox} id="delete-checkbox" />I confirm to
+            delete account.
+          </span>
+          <button onClick={() => deleteUserAccount(checkbox, dispatch)}>Delete Account</button>
         </div>
       </div>
     </StyledDiv>
@@ -24,9 +31,19 @@ export default UserDeleteAccount;
 
 // style
 const StyledDiv = styled.div`
-  .profile-detail-my-email-subtitle {
-    padding-top: 3rem;
+  span {
+    display: block;
+    padding: 1rem 0;
+    color: #444;
   }
+  #delete-checkbox {
+    margin-right: 0.5rem;
+  }
+
+  #profile-detail-delete-account-container {
+    box-shadow: 0px 0px 5px 0px #ff4c33;
+  }
+
   .profile-page-detail-input-div {
     position: relative;
   }
@@ -78,7 +95,7 @@ const StyledDiv = styled.div`
   }
 
   #delete-account-warning {
-    padding-top: 0.25rem;
+    padding-top: 0.5rem;
   }
 
   button {

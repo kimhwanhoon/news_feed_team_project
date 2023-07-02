@@ -75,6 +75,14 @@ const ProfilePageDetailPhotoContainer = ({ userData }) => {
   const handleFileChange = (e) => {
     const photo = e.target.files[0];
     setPhoto(photo);
+    // 파일을 선택하고, 업로드하기 전에 파일을 다시 선택하려고 선택 창을 띄운다음에 취소 버튼을 누르면, 기존에 있는 사진은 취소 되고, 원래 사진으로 돌린다.
+    if (!photo) {
+      setPhotoURLValue(
+        currentUser?.photoURL ??
+          'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
+      );
+      return;
+    }
     // object이다.
     const reader = new FileReader();
     reader.onload = () => {
@@ -163,8 +171,10 @@ const StyledDiv = styled.div`
     cursor: pointer;
   }
   #profile-page-photo-detail-div button:disabled {
-    background-color: #3176cc;
-    color: #aaa;
+    background-color: white;
+    border: 2px solid #ddd;
+    color: #ddd;
+    font-weight: normal;
   }
 
   //
@@ -224,7 +234,7 @@ const StyledDiv = styled.div`
     cursor: pointer;
     font-size: 1rem;
   }
-  #profile-page-button-container button:hover {
+  #profile-page-button-container button:not([disabled]):hover {
     box-shadow: 0 0 2px 0 #aaa;
     background-color: #5196fe;
     color: white;
