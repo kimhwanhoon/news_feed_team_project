@@ -20,7 +20,6 @@ function Header() {
 
   //유저가 로그인 되어있는지 확인하여 새로고침해도 로그아웃이 되지 않게 설정
   const currentUser = useAuth();
-  console.log(subscribedUserData);
   useEffect(() => {
     loggedInUserCheck()
       .then((subscribedUserData) => {
