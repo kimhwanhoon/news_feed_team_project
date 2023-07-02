@@ -3,15 +3,16 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { css } from 'styled-components';
 import HeartBtn from 'modal/Heart';
-import axios from 'axios';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from '../firebase';
-
+import { doc, getFirestore } from 'firebase/firestore';
+import { getDoc } from 'firebase/firestore';
+import { updateDoc } from 'firebase/firestore';
+import { setDoc } from 'firebase/firestore';
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-console.log(firebaseConfig.apiKey);
-console.log(app.name);
+const db = getFirestore();
 
 //---------style-component-------------------
 //-----모달창-----
@@ -90,21 +91,26 @@ export const ModalBackdrop = styled.div`
 export const Modal = ({ closeModal, text, isOpen }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
+
+  const postId = 1;
   //좋아요 하트 버튼
 
-  useEffect(async () => {
+  useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get('/api/data');
-      if (res.data.type === 'liked') setIsLiked(true)
+      const docRef = doc(db, "posts", postId.toString());
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists() && docSnap.data().type === 'liked') {
+        setIsLiked(true);
+      }
     }
     fetchData()
-  }, []);
+  }, [db, postId]);
   
-  const handleLikeClick = async (e) => {
-    const res = await axios.post('/api/like', { postId: 123 }); // [POST] 사용자가 좋아요를 누름 -> DB 갱신
-    setIsLiked(!isLiked)
+  const handleLikeClick = async () => {
+    const docRef = doc(db, "posts", postId.toString());
+    await setDoc(docRef, { type: isLiked ? 'unliked' : 'liked' },{ merge: true });
+    setIsLiked(!isLiked);
   }
-
 
   //배경 누르는 이벤트
 
