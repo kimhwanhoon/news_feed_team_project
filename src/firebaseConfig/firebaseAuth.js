@@ -25,15 +25,16 @@ import {
   handleToggleSignupModal
 } from 'redux/modules/loginModalToggler';
 import {
-  deleteUserDataBySignout,
   handleUserLogout,
   saveUserDataWithEmail,
   saveUserDataWithSocial,
-  signupUserDataUpdate
+  signupUserDataUpdate,
+  userInfoUpdateHandler,
+  userProfileUpdateHandler
 } from 'redux/modules/user';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useEffect, useState } from 'react';
-import { collection, doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 
 const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG);
 
@@ -270,6 +271,7 @@ export const userInfoUpdate = async (
   };
   const infoRef = doc(db, 'profile', auth.currentUser.uid);
   await setDoc(infoRef, otherInfo, { merge: true });
+  userInfoUpdateHandler(dispatch, displayNameValue);
 };
 
 // Custom Hook
@@ -285,15 +287,17 @@ export const useAuth = () => {
 };
 
 // Storage
-export const uploadPhoto = async (file, currentUser, setLoading) => {
+export const uploadPhoto = async (photo, currentUser, setLoading, dispatch) => {
   const fileRef = ref(storage, `profile/${currentUser.uid}.image}`);
   setLoading(true);
-  const snapshot = await uploadBytes(fileRef, file);
+  const snapshot = await uploadBytes(fileRef, photo);
 
   const photoURL = await getDownloadURL(fileRef);
 
-  updateProfile(currentUser, { photoURL });
+  await updateProfile(currentUser, { photoURL });
+
   setLoading(false);
+  userProfileUpdateHandler(dispatch, photoURL);
   alert('Uploaded file!');
 };
 

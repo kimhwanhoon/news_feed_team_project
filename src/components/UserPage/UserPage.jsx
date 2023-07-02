@@ -1,6 +1,6 @@
 import { uploadPhoto, useAuth } from 'firebaseConfig/firebaseAuth';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { styled } from 'styled-components';
 import ProfilePageDetailProfileContainer from './UserPageProfile';
 import UserMyEmail from './UserMyEmail';
@@ -60,47 +60,50 @@ export default UserPageDetail;
 const ProfilePageDetailPhotoContainer = ({ userData }) => {
   const [photoURLValue, setPhotoURLValue] = useState('');
   const fileInputRef = useRef(null);
-
   const currentUser = useAuth();
+  const userInfo = useSelector((state) => {
+    return state.userData;
+  });
+  const dispatch = useDispatch();
+  // const currentUser = useAuth();
   useEffect(() => {
-    if (currentUser?.photoURL) {
-      setPhotoURLValue(currentUser.photoURL);
+    if (userInfo?.photoURL) {
+      setPhotoURLValue(userInfo.photoURL);
     } else {
       setPhotoURLValue('https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png');
     }
-  }, [currentUser]);
+  }, [userInfo]);
   const [photo, setPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
   //
   const handleFileChange = (e) => {
-    const photo = e.target.files[0];
-    setPhoto(photo);
+    const file = e.target.files[0];
+    setPhoto(file);
     // 파일을 선택하고, 업로드하기 전에 파일을 다시 선택하려고 선택 창을 띄운다음에 취소 버튼을 누르면, 기존에 있는 사진은 취소 되고, 원래 사진으로 돌린다.
-    if (!photo) {
+    if (!file) {
       setPhotoURLValue(
-        currentUser?.photoURL ??
-          'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
+        userInfo?.photoURL ?? 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'
       );
       return;
     }
-    // object이다.
+    // 선택한 파일을 새로운 프로필에 보여주기
     const reader = new FileReader();
     reader.onload = () => {
       const uploadedPhotoURL = reader.result;
       setPhotoURLValue(uploadedPhotoURL);
     };
-    const isImage = photo.type.startsWith('image/');
+    const isImage = file.type.startsWith('image/');
     if (!isImage) {
       alert('이미지 파일만 업로드할 수 있습니다.');
       fileInputRef.current.value = null;
       return;
     }
-    if (photo) {
-      reader.readAsDataURL(photo);
+    if (file) {
+      reader.readAsDataURL(file);
     }
   };
   const handleClick = () => {
-    uploadPhoto(photo, currentUser, setLoading);
+    uploadPhoto(photo, currentUser, setLoading, dispatch);
   };
   return (
     <div id="profile-page-detail-container">
