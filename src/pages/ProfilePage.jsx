@@ -3,14 +3,15 @@ import styled from 'styled-components';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
-import { fetchUserDate } from 'redux/modules/user';
+import { fetchUserData } from 'redux/modules/user';
 import { useDispatch } from 'react-redux';
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.user);
 
   useEffect(()=> {
-    dispatch(fetchUserDate());
+    dispatch(fetchUserData());
   },[dispatch])
     
   const [profileImage, setProfileImage] = useState(null);
@@ -37,18 +38,18 @@ const ProfilePage = () => {
 
   const handleSave = () => {
     const userData = { name, jobHobby, introduction, profileImage };
-    saveUserData(userData)
-      .then(() => toast.success('저장이 완료되었습니다.'))
-      .catch((error) => toast.error('저장 중 오류가 발생했습니다.'));
-  };
+    dispatch(fetchUserData(userData))
+    .then(() => toast.success('저장이 완료되었습니다.'))
+    .catch((error) => toast.error('저장 중 오류가 발생했습니다.'));
+};
 
   const myPosts = [
-    { id: 1, title: '첫 번째 글', content: '내가 쓴 첫 번째 글입니다.' },
-    { id: 2, title: '두 번째 글', content: '내가 쓴 두 번째 글입니다.' },
-    { id: 3, title: '세 번째 글', content: '내가 쓴 세 번째 글입니다.' }
+    { id: 1, title: '첫 번째 글', textcontent: '내가 쓴 첫 번째 글입니다.' },
+    { id: 2, title: '두 번째 글', textcontent: '내가 쓴 두 번째 글입니다.' },
+    { id: 3, title: '세 번째 글', textcontent: '내가 쓴 세 번째 글입니다.' }
   ];
 
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.userData);
   useEffect(() => {
     if (user) {
       setName(user.name);
@@ -60,6 +61,7 @@ const ProfilePage = () => {
 
   return (
     <Container>
+      <h1>Welcome, {user.name}</h1>
       <LeftSection>
         <ProfileImageWrapper>
           <ProfileImage src={profileImage} alt="프로필 사진" />
@@ -77,7 +79,7 @@ const ProfilePage = () => {
           {myPosts.map((post) => (
             <PostItem key={post.id}>
               <h3>{post.title}</h3>
-              <p>{post.content}</p>
+              <p>{post.textcontent}</p>
             </PostItem>
           ))}
         </PostList>

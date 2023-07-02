@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useDispatch } from 'react-redux';
-
+import { setUser } from 'redux/config/actions';
 const Auth = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const onChange = (event) => {
-    const {
-      target: { name, value }
-    } = event;
+    const {name, value} = event.target;
     if (name === 'email') {
       setEmail(value);
     }

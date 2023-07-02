@@ -20,20 +20,18 @@ const initialState = {
   
   const isLoginSuccess = (state = initialState, action) => {
     switch (action.type) {
-      default: {
-        return state;
-      }
       case SUCCESS_LOGIN_ACTION_TYPE.LOGIN_SUCCESS: {
         return {
-          ...state,
           loginSuccess: true
         };
       }
       case SUCCESS_LOGIN_ACTION_TYPE.LOGOUT_SUCCESS: {
         return {
-          ...state,
           loginSuccess: false
         };
+      }
+      default: {
+        return state;
       }
     }
   };

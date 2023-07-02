@@ -38,8 +38,11 @@ const auth = getAuth(app);
 
 // email과 password로 로그인
 export const loginWithEmailPassword = async (email, password, dispatch) => {
+  
   const loginEmail = email;
   const loginPassword = password;
+  const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+  console.log(userCredential);
   try {
     const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
     // dispatch로 store에 유저정보 업데이트하기
@@ -224,3 +227,5 @@ export const sendResetPasswordMail = (email, dispatch) => {
       console.log(errorDetail);
     });
 };
+
+export default app;

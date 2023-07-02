@@ -15,7 +15,6 @@ function Header() {
         if (!userData) {
           return;
         } else {
-          login$outToggle();
           dispatch(fetchUserDate(userData));
         }
       })

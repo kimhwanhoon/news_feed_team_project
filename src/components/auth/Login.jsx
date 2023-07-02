@@ -1,9 +1,11 @@
-import { loginOnClickHandler } from 'components/Header';
+import { loginOnClickHandler, signupOnClickHandler } from 'components/Header';
 import { loginWithEmailPassword, loginWithGithub, loginWithGoogle } from 'firebaseConfig/firebaseAuth';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ForgotPassword, { toggleForgotPasswordModal } from './ForgotPassword';
 import { setUser } from 'redux/config/actions';
+import { loginSucess } from 'redux/modules/isLoginSuccess';
+
 const inputOnChangeHandler = (e, setFn) => {
   setFn(e.target.value);
 };
@@ -14,8 +16,10 @@ function LoginModal({onclose}) {
   //
   const login = async (loginFn, ...args) => {
     const userInfo = await loginFn(...args);
-    dispatch(setUser(userInfo)); // 로그인 성공 후 사용자 정보 디스패치
+    dispatch(loginSucess()); 
+    dispatch(setUser(userInfo));
   };
+  
 
   const isLoginSuccess = useSelector((state) => {
     return state.isLoginSuccess.loginSuccess;
@@ -28,6 +32,8 @@ function LoginModal({onclose}) {
       setPasswordValue('');
     }
   }, [isLoginSuccess]);
+
+
 
   return (
     <>
@@ -99,8 +105,3 @@ function LoginModal({onclose}) {
 }
 
 export default LoginModal;
-
-const signupOnClickHandler = () => {
-  document.getElementById('login-modal').classList.toggle('hidden');
-  document.getElementById('signup-modal').classList.toggle('hidden');
-};

@@ -11,7 +11,9 @@ function Home() {
       <div>
       {/* <Modal open={openModalHandler} header="modal" /> */}
       </div>
-      <div></div>
+      <div>
+        
+      </div>
     </StyledHome>
   );
 }

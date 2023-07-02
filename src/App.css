@@ -173,3 +173,7 @@
   .close-button:hover {
     color: rgb(35, 35, 35);
   }
+
+  .newFeed {
+    width: 500px;
+  }

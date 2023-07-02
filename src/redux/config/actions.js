@@ -1,5 +1,5 @@
 // actions.js
-
+import { initialState } from "redux/modules/user";
 // 사용자 정보 설정 액션 타입
 export const SET_USER = 'SET_USER';
 
@@ -35,3 +35,17 @@ export const loginAction = () => {
     type: 'LOGIN' 
   };
 };
+
+const userReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'SET_USER':
+      return {
+        ...state,
+        user: action.payload
+      };
+    default:
+      return state;
+  }
+};
+
+export default userReducer;

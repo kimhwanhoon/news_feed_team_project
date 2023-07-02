@@ -7,10 +7,12 @@ import Feed from './components/Feed';
 import Searchbar from './components/Searchbar';
 import Router from 'shared/Router';
 import Detail from './shared/detail';
+import LoginModal from 'components/auth/Login';
 
 const App = () => {
   const [feeds, setFeeds] = useState([]);
   const [searchValue, setSearchValue] = useState('');
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -22,6 +24,16 @@ const App = () => {
     setSearchValue(value);
   };
 
+
+
+  const handleLoginButtonClick = () => {
+    setIsLoginModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsLoginModalOpen(false);
+  };
+
   return (
     <div className="App">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -29,7 +41,9 @@ const App = () => {
         <div style={{ flex: '1', textAlign: 'center' }}>
           <Searchbar feeds={feeds} setFilteredFeeds={setFeeds} onSearchChange={handleSearchChange} />
         </div>
-        <button style={{ marginRight: '10px' }}>Login</button>
+        <button style={{ marginRight: '10px' }} onClick={handleLoginButtonClick}>Login</button>
+
+        {isLoginModalOpen && <LoginModal onClose={handleModalClose} />}
       </div>
       <Feed feeds={feeds} setFeeds={setFeeds} searchValue={searchValue} />
       <Detail />

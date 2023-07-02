@@ -101,8 +101,10 @@ const Feed = ({ searchValue }) => {
 };
 
 const StyledBtn = styled.div`
-  display: flex;
-  justify-content: center;
+width:600px;
+height:50px;
+display: flex;
+justify-content: center;
 `;
 
 export default Feed
