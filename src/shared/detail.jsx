@@ -92,18 +92,23 @@ export const ModalBackdrop = styled.div`
 
 export const Modal = ({ closeModal, text, isOpen }) => {
   const user=useSelector(state=> state.user);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(isOpen);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const username = user ? user.name : '익명의 작성자';
   const postId = 1;
+
+  const[like,setLike]=useState(false);
   //좋아요 하트 버튼
+
+  useEffect(() => {
+    setIsModalOpen(isOpen);
+  }, [isOpen]);
 
   useEffect(() => {
     const fetchData = async () => {
       const docRef = doc(db, "posts", postId.toString());
       const docSnap = await getDoc(docRef);
       if (docSnap.exists() && docSnap.data().type === 'liked') {
-        setIsLiked(true);
+        setLike(true);
       }
     }
     fetchData()
@@ -111,8 +116,8 @@ export const Modal = ({ closeModal, text, isOpen }) => {
   
   const handleLikeClick = async () => {
     const docRef = doc(db, "posts", postId.toString());
-    await setDoc(docRef, { type: isLiked ? 'unliked' : 'liked' },{ merge: true });
-    setIsLiked(!isLiked);
+    await setDoc(docRef, { type: like ? 'unliked' : 'liked' },{ merge: true });
+    setLike(prevLike => !prevLike);
   }
 
   //배경 누르는 이벤트
@@ -121,6 +126,11 @@ export const Modal = ({ closeModal, text, isOpen }) => {
     closeModal();
     setIsModalOpen(false);
   };
+  useEffect(() => {
+    if (isOpen) {
+      setIsModalOpen(true);
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -135,7 +145,7 @@ export const Modal = ({ closeModal, text, isOpen }) => {
               </DetailTitle>
               <DetailBox scrollable>{text}</DetailBox>
               <ButtonContainer>
-                <HeartBtn initialLike={isLiked} onClick={handleLikeClick} />
+                <HeartBtn initialLike={like} onClick={handleLikeClick} />
                 <button onClick={handleBackdropClick}>닫기</button>
               </ButtonContainer>
             </DetailModal>

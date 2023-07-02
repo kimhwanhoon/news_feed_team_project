@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
+import { useDispatch } from 'react-redux';
 
 const Auth = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -36,6 +38,7 @@ const Auth = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('user with signIn', userCredential.user);
+      dispatch(setUser(userCredential.user));
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -46,6 +49,7 @@ const Auth = () => {
   const logOut = async (event) => {
     event.preventDefault();
     await signOut(auth);
+    dispatch(setUser(null));
   };
 
   return (
