@@ -1,4 +1,6 @@
-const initialState = [];
+const initialState = {
+  user: null,
+};
 
 const USER_DATA_ACTION_TYPES = {
   EMAIL_PASSWORD: '이메일과 비밀번호로 유저 데이터 업데이트',
@@ -62,7 +64,17 @@ const userData = (state = initialState, action) => {
     case USER_DATA_ACTION_TYPES.SIGN_UP: {
       return action.payload;
     }
-  }
+  }}
+  const userReducer = (state = initialState, action) => {
+    switch (action.type) {
+      case 'SET_USER':
+        return {
+          ...state,
+          user: action.payload
+        };
+     default:
+      return state;
+      }
 };
 
 export default userData;

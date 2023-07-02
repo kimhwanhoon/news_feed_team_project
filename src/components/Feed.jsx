@@ -60,8 +60,8 @@ const Feed = ({ searchValue }) => {
     event.preventDefault();
     const newFeed = {
       text: text,
-      authorName: user.name,
-      authorProfileUrl: user.profileUrl,
+      authorName: user?.name || "Unknown",
+      authorProfileUrl: user?.profileUrl || "",
     };
 
   

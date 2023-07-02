@@ -10,6 +10,8 @@ import { doc, getFirestore } from 'firebase/firestore';
 import { getDoc } from 'firebase/firestore';
 import { updateDoc } from 'firebase/firestore';
 import { setDoc } from 'firebase/firestore';
+import { useSelector } from 'react-redux';
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore();
@@ -89,9 +91,10 @@ export const ModalBackdrop = styled.div`
 
 
 export const Modal = ({ closeModal, text, isOpen }) => {
+  const user=useSelector(state=> state.user);
   const [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(isOpen);
-
+  const username = user ? user.name : '익명의 작성자';
   const postId = 1;
   //좋아요 하트 버튼
 
@@ -128,7 +131,7 @@ export const Modal = ({ closeModal, text, isOpen }) => {
             <DetailModal>
               <DetailTitle>
                 <User src={'../img/user (1).png'} />
-                nickname
+                {username}
               </DetailTitle>
               <DetailBox scrollable>{text}</DetailBox>
               <ButtonContainer>
